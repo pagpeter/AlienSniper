@@ -1,33 +1,29 @@
 package shared
 
-import (
-	"strings"
-)
+import "encoding/json"
+
+type Content struct {
+	Error  string  `json:"error,omitempty"`
+	Auth   string  `json:"auth,omitempty"`
+	Config *Config `json:"config,omitempty"`
+}
 
 type Packet struct {
-	Type string
-	Data string
+	Type    string  `json:"type"`
+	Content Content `json:"content"`
 }
 
 func (p *Packet) Encode() []byte {
-	// Encode the packet to a byte array
-	return []byte(p.Type + "**" + p.Data)
+	b, _ := json.Marshal(p)
+	return b
 }
 
-func (p *Packet) Decode(data []byte) (err string) {
-	// Decode the packet from a byte array
-	pckt := string(data)
-	pieces := strings.Split(pckt, "**")
-
-	if len(pieces) != 2 {
-		return // Invalid packet
-	}
-
-	p.Type = pieces[0]
-	p.Data = pieces[1]
-	return ""
+func (p *Packet) Decode(data []byte) (err error) {
+	return json.Unmarshal(data, p)
 }
 
-// type Connection struct {
-// 	Conn websocket.Conn // The websocket connection
-// }
+func (p *Packet) MakeError(err string) Packet {
+	p.Type = "error"
+	p.Content = Content{Error: err}
+	return *p
+}
