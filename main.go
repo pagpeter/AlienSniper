@@ -7,7 +7,8 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
-	"time"
+
+	"github.com/urfave/cli/v2"
 )
 
 const version = "0.0.1"
@@ -49,12 +50,10 @@ func ClearScreen() {
 }
 
 func main() {
-	HandleArgs()
 	ClearScreen()
 	PrintLogo()
-	PrintStats()
-	fmt.Println("\n")
-	time.Sleep(time.Second * 100)
+	Handle()
+	fmt.Print("\n\n")
 }
 
 func PrintLogo() {
@@ -66,8 +65,6 @@ func PrintLogo() {
 	text += `         (+).""""""""""""",(+)` + "\n"
 	text += "             .           ,\n"
 	text += "               `  -=-  '\n"
-	text += "\n\n"
-	text += "Alien: Faster than every cowboy\n\n"
 	fmt.Println(text)
 }
 
@@ -78,51 +75,80 @@ func PrintStats() {
 	fmt.Println("Names successfully sniped: " + "3")
 }
 
-func HandleArgs() {
-	// Handle command line arguments
+func Handle() {
+	app := &cli.App{
+		Commands: []*cli.Command{
+			{
+				Name: "help",
+				Action: func(c *cli.Context) error {
+					usage := fmt.Sprintf("Usage: %salien [options]\n\n", prefix[runtime.GOOS])
+					usage += "Options:\n"
+					usage += "    help: Print this help message\n"
+					usage += "    version: Print the version number\n"
+					usage += "    configure: Configure the application\n"
+					usage += "    start: Start the CLI\n"
+					usage += "    host: Start as the host in the background\n"
+					usage += "    node: Start as a node in the background\n"
 
-	if len(os.Args) > 1 {
-		prefix := prefix[runtime.GOOS]
-		usage := fmt.Sprintf("Usage: %salien [options]\n\n", prefix)
-		usage += "Options:\n"
-		usage += "    help: Print this help message\n"
-		usage += "    version: Print the version number\n"
-		usage += "    configure: Configure the application\n"
-		usage += "    start: Start the CLI\n"
-		usage += "    host: Start as the host in the background\n"
-		usage += "    node: Start as a node in the background\n"
+					fmt.Println(usage)
+					return nil
+				},
+			},
+			{
+				Name: "stats",
+				Action: func(c *cli.Context) error {
+					PrintStats()
+					return nil
+				},
+			},
+			{
+				Name: "version",
+				Action: func(c *cli.Context) error {
+					fmt.Println("Version: " + version)
+					return nil
+				},
+			},
+			{
+				Name: "configure",
+				Action: func(ca *cli.Context) error {
+					c := shared.Configure()
+					c.SaveToFile()
+					os.Exit(0)
+					return nil
+				},
+			},
+			{
+				Name: "start",
+				Action: func(c *cli.Context) error {
+					fmt.Println("Starting...")
+					os.Exit(0)
+					return nil
+				},
+			},
+			{
+				Name: "node",
+				Action: func(c *cli.Context) error {
+					fmt.Println("Starting as node...")
+					host.Start()
+					os.Exit(0)
+					return nil
+				},
+			},
+			{
+				Name: "host",
+				Action: func(c *cli.Context) error {
+					fmt.Println("Starting as host...")
+					host.Start()
+					os.Exit(0)
+					return nil
+				},
+			},
+		},
 
-		if len(os.Args) == 1 {
-			fmt.Println(usage)
-			os.Exit(0)
-		}
-
-		arg := os.Args[1]
-		switch arg {
-		case "help":
-			fmt.Println(usage)
-			os.Exit(0)
-		case "version":
-			fmt.Println("Version: " + version)
-			os.Exit(0)
-		case "configure":
-			c := shared.Configure()
-			c.SaveToFile()
-			os.Exit(0)
-		case "start":
-			fmt.Println("Starting...")
-			os.Exit(0)
-		case "node":
-			fmt.Println("Starting as node...")
-			host.Start()
-			os.Exit(0)
-		case "host":
-			fmt.Println("Starting as host...")
-			os.Exit(0)
-		default:
-			fmt.Println("Unknown argument: " + arg)
-			fmt.Println(usage)
-			os.Exit(0)
-		}
+		Name:    "Alien",
+		Usage:   "Faster than every cowboy",
+		Version: version,
 	}
+
+	app.Run(os.Args)
 }
