@@ -1,6 +1,7 @@
 package main
 
 import (
+	shared "Alien/shared"
 	"fmt"
 	"os"
 	"os/exec"
@@ -8,7 +9,14 @@ import (
 	"time"
 )
 
+const version = "0.0.1"
+
 var clear map[string]func() //create a map for storing clear funcs
+var prefix = map[string]string{
+	"windows": "",
+	"darwin":  "./",
+	"linux":   "./",
+}
 
 // https://stackoverflow.com/a/22896706
 func init() {
@@ -29,6 +37,8 @@ func init() {
 }
 
 func ClearScreen() {
+	// Clear screen on supported platforms
+
 	value, ok := clear[runtime.GOOS] //runtime.GOOS -> linux, windows, darwin etc.
 	if ok {                          //if we defined a clear func for that platform:
 		value() //we execute it
@@ -38,6 +48,7 @@ func ClearScreen() {
 }
 
 func main() {
+	HandleArgs()
 	ClearScreen()
 	PrintLogo()
 	PrintStats()
@@ -64,4 +75,52 @@ func PrintStats() {
 	fmt.Println("Servers connected: " + "7")        //strconv.Itoa(len(servers)))
 	fmt.Println("Names attempted to snipe: " + "5") //strconv.Itoa(len(names)))
 	fmt.Println("Names successfully sniped: " + "3")
+}
+
+func HandleArgs() {
+	// Handle command line arguments
+
+	if len(os.Args) > 1 {
+		prefix := prefix[runtime.GOOS]
+		usage := fmt.Sprintf("Usage: %salien [options]\n\n", prefix)
+		usage += "Options:\n"
+		usage += "    help: Print this help message\n"
+		usage += "    version: Print the version number\n"
+		usage += "    configure: Configure the application\n"
+		usage += "    start: Start the CLI\n"
+		usage += "    node: Start as a node in the background\n"
+		usage += "    client: Start as a client in the background\n"
+
+		if len(os.Args) == 1 {
+			fmt.Println(usage)
+			os.Exit(0)
+		}
+
+		arg := os.Args[1]
+		switch arg {
+		case "help":
+			fmt.Println(usage)
+			os.Exit(0)
+		case "version":
+			fmt.Println("Version: " + version)
+			os.Exit(0)
+		case "configure":
+			c := shared.Configure()
+			c.SaveToFile()
+			os.Exit(0)
+		case "start":
+			fmt.Println("Starting...")
+			os.Exit(0)
+		case "node":
+			fmt.Println("Starting node...")
+			os.Exit(0)
+		case "client":
+			fmt.Println("Starting client...")
+			os.Exit(0)
+		default:
+			fmt.Println("Unknown argument: " + arg)
+			fmt.Println(usage)
+			os.Exit(0)
+		}
+	}
 }
