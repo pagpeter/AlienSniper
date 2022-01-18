@@ -46,7 +46,33 @@ func CheckInitialAuth(p utils.Packet) bool {
 func HandlePacket(p utils.Packet) utils.Packet {
 	// Handle a packet
 	// return the response packet
-	return utils.Packet{Content: utils.Content{}, Type: "response"}
+
+	// auth is handled somwehere else
+	res := utils.Packet{}
+
+	switch p.Type {
+	case "config":
+		res.Type = "config"
+		res.Content.Config = &utils.Config{}
+		p.Content.Config.LoadFromFile()
+		return p
+	case "add_account":
+		res.Type = "response"
+		res.Content.Response = &utils.Response{}
+		res.Content.Response.Message = "Account added"
+		return p
+	case "remove_account":
+		res.Type = "response"
+		res.Content.Response = &utils.Response{}
+		res.Content.Response.Message = "Account removed"
+		return p
+	default:
+		res.Type = "error"
+		res.Content.Error = "Unknown packet type"
+		return res
+	}
+
+	return res
 }
 
 func ConnectionHandler(c *websocket.Conn) {

@@ -29,13 +29,72 @@ content:
 
 ### Config
 
-The `config` packet is normally send from the host to the client.
+The `config` packet is normally send from the host to the client. It returns the full config of the host.
 
 content:
 ```json
 {
-    TODO
+    "config": {
+        "host": <ip of host>,
+        "port": <port of host>,
+        "todo": "todo"
+    }
 }
 ```
 
+### Add account
 
+the `add_account` packet is send to add a account to the host.
+
+account types:
+    - ms
+    - gc
+    - mojang
+
+content:
+```json
+{
+    "account": {
+        "acc_type": <account type>,
+        "password": <account password>,
+        "email": <account email>
+    }
+}
+```
+
+### Remove account
+the `remove_account` packet is send to remove an account.
+
+content:
+```json
+{
+    "email": <email>
+}
+```
+
+### Task
+
+The `task` packet is send from a node to a host.
+For example, this could be a command to snipe a name with specified bearers.
+
+content:
+```json
+{
+    "task": {
+        "type": <task type>
+    } 
+}
+```
+
+### Response
+
+The `response` packet is send from the host to a node. 
+
+```json
+{
+    "reponse": {
+        "error": null,
+        "message": "error message"
+    }
+}
+```

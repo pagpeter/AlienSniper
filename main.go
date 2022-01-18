@@ -118,7 +118,6 @@ func HandleArgs() {
 			os.Exit(0)
 		case "host":
 			fmt.Println("Starting as host...")
-			host.Start()
 			os.Exit(0)
 		default:
 			fmt.Println("Unknown argument: " + arg)
