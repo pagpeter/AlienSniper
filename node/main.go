@@ -1,7 +1,5 @@
 package node
 
-import "fmt"
+func Start() {
 
-func Test() {
-	fmt.Println("Hello, World!")
 }

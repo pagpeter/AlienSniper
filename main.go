@@ -1,6 +1,7 @@
 package main
 
 import (
+	"Alien/host"
 	shared "Alien/shared"
 	"fmt"
 	"os"
@@ -88,8 +89,8 @@ func HandleArgs() {
 		usage += "    version: Print the version number\n"
 		usage += "    configure: Configure the application\n"
 		usage += "    start: Start the CLI\n"
+		usage += "    host: Start as the host in the background\n"
 		usage += "    node: Start as a node in the background\n"
-		usage += "    client: Start as a client in the background\n"
 
 		if len(os.Args) == 1 {
 			fmt.Println(usage)
@@ -112,10 +113,12 @@ func HandleArgs() {
 			fmt.Println("Starting...")
 			os.Exit(0)
 		case "node":
-			fmt.Println("Starting node...")
+			fmt.Println("Starting as node...")
+			host.Start()
 			os.Exit(0)
-		case "client":
-			fmt.Println("Starting client...")
+		case "host":
+			fmt.Println("Starting as host...")
+			host.Start()
 			os.Exit(0)
 		default:
 			fmt.Println("Unknown argument: " + arg)
