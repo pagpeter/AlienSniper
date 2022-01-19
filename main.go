@@ -2,7 +2,7 @@ package main
 
 import (
 	"Alien/host"
-	shared "Alien/shared"
+	types "Alien/types"
 	"fmt"
 	"os"
 	"os/exec"
@@ -111,7 +111,7 @@ func Handle() {
 			{
 				Name: "configure",
 				Action: func(ca *cli.Context) error {
-					c := shared.Configure()
+					c := types.Configure()
 					c.SaveToFile()
 					os.Exit(0)
 					return nil

@@ -1,11 +1,14 @@
-package shared
+package types
 
-import "encoding/json"
+import (
+	"encoding/json"
+)
 
 type Content struct {
 	Error string `json:"error,omitempty"`
 	Auth  string `json:"auth,omitempty"`
 
+	State    *State    `json:"state,omitempty"`
 	Config   *Config   `json:"config,omitempty"`
 	Response *Response `json:"response,omitempty"`
 	Task     *Task     `json:"task,omitempty"`

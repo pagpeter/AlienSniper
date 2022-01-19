@@ -90,6 +90,7 @@ content:
 
 The `response` packet is send from the host to a node. 
 
+content:
 ```json
 {
     "reponse": {
@@ -98,3 +99,7 @@ The `response` packet is send from the host to a node.
     }
 }
 ```
+
+### Get state
+
+The `get_state` packet gets the full state of the host. This includes the queue, accounts, config, etc.

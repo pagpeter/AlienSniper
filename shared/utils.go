@@ -37,3 +37,16 @@ func ToInt(s string) int {
 	}
 	return i
 }
+
+func ReadFile(path string) ([]byte, error) {
+	return ioutil.ReadFile(path)
+}
+
+func WriteFile(path string, content string) {
+	ioutil.WriteFile(path, []byte(content), 0644)
+}
+
+func IsInMap(key string, m map[string]int) bool {
+	_, ok := m[key]
+	return ok
+}

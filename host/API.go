@@ -1,7 +1,7 @@
 package host
 
 import (
-	utils "Alien/shared"
+	types "Alien/types"
 	"fmt"
 	"log"
 	"net/http"
@@ -10,7 +10,7 @@ import (
 )
 
 var upgrader = websocket.Upgrader{}
-var tmp utils.Packet
+var tmp types.Packet
 
 func home(w http.ResponseWriter, r *http.Request) {
 	// Handle the home page
@@ -38,41 +38,9 @@ func StartAPI(addr string) {
 	log.Fatal(http.ListenAndServe(addr, nil))
 }
 
-func CheckInitialAuth(p utils.Packet) bool {
+func CheckInitialAuth(p types.Packet) bool {
 	// TODO: Check if the auth packet is valid
 	return true
-}
-
-func HandlePacket(p utils.Packet) utils.Packet {
-	// Handle a packet
-	// return the response packet
-
-	// auth is handled somwehere else
-	res := utils.Packet{}
-
-	switch p.Type {
-	case "config":
-		res.Type = "config"
-		res.Content.Config = &utils.Config{}
-		p.Content.Config.LoadFromFile()
-		return p
-	case "add_account":
-		res.Type = "response"
-		res.Content.Response = &utils.Response{}
-		res.Content.Response.Message = "Account added"
-		return p
-	case "remove_account":
-		res.Type = "response"
-		res.Content.Response = &utils.Response{}
-		res.Content.Response.Message = "Account removed"
-		return p
-	default:
-		res.Type = "error"
-		res.Content.Error = "Unknown packet type"
-		return res
-	}
-
-	return res
 }
 
 func ConnectionHandler(c *websocket.Conn) {
@@ -91,7 +59,7 @@ func ConnectionHandler(c *websocket.Conn) {
 		return
 	}
 
-	var p utils.Packet
+	var p types.Packet
 	err = p.Decode(authMessage)
 	if err != nil {
 		log.Println("Initial auth decode:", err, c.RemoteAddr().String())
@@ -127,7 +95,7 @@ func ConnectionHandler(c *websocket.Conn) {
 			break
 		}
 		// log.Printf("recv: %s", message)
-		var p utils.Packet
+		var p types.Packet
 		err = p.Decode(message)
 		if err != nil {
 			log.Println("decode:", err, c.RemoteAddr().String())
