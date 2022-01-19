@@ -39,8 +39,8 @@ func StartAPI(addr string) {
 }
 
 func CheckInitialAuth(p types.Packet) bool {
-	// TODO: Check if the auth packet is valid
-	return true
+	// Check the auth packet
+	return p.Content.Auth == state.Config.Token
 }
 
 func ConnectionHandler(c *websocket.Conn) {

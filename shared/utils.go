@@ -3,6 +3,7 @@ package shared
 import (
 	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"net/http"
 	"strconv"
 )
@@ -49,4 +50,12 @@ func WriteFile(path string, content string) {
 func IsInMap(key string, m map[string]int) bool {
 	_, ok := m[key]
 	return ok
+}
+
+func GenerateToken(length int) string {
+	var token string
+	for i := 0; i < length; i++ {
+		token += string(rune(65 + rand.Intn(25)))
+	}
+	return token
 }

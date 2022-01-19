@@ -46,8 +46,6 @@ func (s *State) LoadState() {
 	}
 	json.Unmarshal([]byte(data), s)
 
-	if s.Config == (Config{}) {
-		s.Config = Config{}
-		s.Config.LoadFromFile()
-	}
+	s.Config = Config{}
+	s.Config.LoadFromFile()
 }

@@ -19,6 +19,7 @@ type Config struct {
 	Host     string   `json:"host"`
 	Port     int      `json:"port"`
 	Requests Requests `json:"requests"`
+	Token    string   `json:"token"`
 }
 
 func (c *Config) LoadFromFile() {
@@ -49,36 +50,37 @@ func Configure() Config {
 	fmt.Println("Welcome, we are now configuring Alien for you. ")
 	fmt.Println("Press enter to use the default values.\n")
 
+	c.Token = utils.GenerateToken(20)
+	fmt.Println("Generated token: ", c.Token)
+
 	c.Host = utils.Input(fmt.Sprintf("IP address of host API (%s):\n> ", IP))
 	if c.Host == "" {
 		c.Host = IP
-		fmt.Println("Using host at: " + c.Host)
+		fmt.Println("\nUsing host at: " + c.Host)
 	}
-
-	fmt.Println("\n")
 
 	c.Port = utils.ToInt(utils.Input(fmt.Sprintf("Port of host API (20514):\n> ")))
 	if c.Port == 0 {
 		c.Port = 20514
-		fmt.Println("Using port 20514")
+		fmt.Println("\nUsing port 20514")
 	}
 
 	c.Requests.Giftcard = utils.ToInt(utils.Input(fmt.Sprintf("Giftcard requests (6):\n> ")))
 	if c.Requests.Giftcard == 0 {
 		c.Requests.Giftcard = 6
-		fmt.Println("Using 6 giftcard requests")
+		fmt.Println("\nUsing 6 giftcard requests")
 	}
 
-	c.Requests.Mojang = utils.ToInt(utils.Input(fmt.Sprintf("Mojang requests (6):\n> ")))
+	c.Requests.Mojang = utils.ToInt(utils.Input(fmt.Sprintf("Mojang requests (2):\n> ")))
 	if c.Requests.Mojang == 0 {
-		c.Requests.Mojang = 6
-		fmt.Println("Using 6 mojang requests")
+		c.Requests.Mojang = 2
+		fmt.Println("\nUsing 2 mojang requests")
 	}
 
-	c.Requests.Microsoft = utils.ToInt(utils.Input(fmt.Sprintf("Microsoft requests (6):\n> ")))
+	c.Requests.Microsoft = utils.ToInt(utils.Input(fmt.Sprintf("Microsoft requests (2):\n> ")))
 	if c.Requests.Microsoft == 0 {
-		c.Requests.Microsoft = 6
-		fmt.Println("Using 6 microsoft requests")
+		c.Requests.Microsoft = 2
+		fmt.Println("\nUsing 2 microsoft requests")
 	}
 
 	return c
