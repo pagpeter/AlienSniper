@@ -67,8 +67,10 @@ the `remove_account` packet is send to remove an account.
 
 content:
 ```json
-"remove": {
-  "email": "email@email.com"
+{
+    "remove": {
+        "email": "email@email.com"
+    }
 }
 ```
 
