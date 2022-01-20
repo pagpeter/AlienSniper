@@ -12,13 +12,13 @@
 <body>
 
     <nav>
-        <div class="navbar rounded-none mb-2 shadow-lg bg-neutral text-neutral-content rounded-box">
+        <div class="navbar pr-5 rounded-none mb-2 shadow-lg bg-neutral text-neutral-content rounded-box">
             <div class="flex-1 px-2 mx-2">
               <a href="/" class="text-lg font-bold">
                   Alien
               </a>
             </div> 
-            <div class="flex-none hidden px-2 mx-2 sm:flex">
+            <div class="flex-none">
               <div class="flex items-stretch">
                 <a href="/tasks" class="btn btn-ghost btn-sm rounded-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="inline-block w-5 mr-2 stroke-current">
@@ -50,9 +50,18 @@
 
                 <div class="form-control">
                     <label class="label">
-                    <span class="label-text">Name to snipe</span>
+                        <span class="label-text">Name to snipe</span>
                     </label> 
                     <input type="text" placeholder="username" class="input input-bordered">
+
+                    <label class="label">
+                        <span class="label-text">Group to use</span>
+                    </label> 
+                    <input type="text" list="groups" placeholder="None" class="input input-bordered">
+                    <datalist id="groups">
+                        <option value="GCs">
+                        <option value="Capes">
+                      </datalist>
 
                     <div class="modal-action">
                         <label for="my-modal-2" class="btn btn-primary">Add to queue</label> 
@@ -62,12 +71,14 @@
             </div>
         </div>
 
-        <table class="table mx-auto w-11/12 table-zebra  border border-primary">
+        <div class="mx-5">
+          <table class="table mx-auto w-full mx-auto table-zebra  border border-primary">
             <thead>
               <tr>
                 <th>Name</th> 
                 <th>Droptime</th> 
                 <th>Searches</th>
+                <th>Group to use</A></th>
               </tr>
             </thead> 
             <tbody>
@@ -79,6 +90,7 @@
                     </span>
                 </td> 
                 <td>165</td>
+                <td>All</td>
               </tr>
               <tr>
                 <td>VeryOgName</td> 
@@ -88,6 +100,7 @@
                     </span>
                 </td>
                 <td>104</td>
+                <td>All</td>
               </tr>
               <tr>
                 <td>MostOgName</td> 
@@ -97,6 +110,7 @@
                     </span> 
                 </td>
                 <td>860</td>
+                <td>All</td>
               </tr>
               <tr>
                 <td>Peet</td> 
@@ -106,9 +120,11 @@
                     </span>
                 </td>
                 <td>1248</td>
+                <td>Capes</td>
               </tr>
             </tbody>
           </table>
+        </div>
     </div>
     
 </body>
