@@ -7,7 +7,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/daisyui@1.24.3/dist/full.css" rel="stylesheet" type="text/css" />
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2/dist/tailwind.min.css" rel="stylesheet" type="text/css" />
-    <title>Accounts | Alien</title>
+    <title>Alien</title>
+
+    <style>
+        /* Remove that damn arrow. Why doesnt tailwind do this? */
+        details > summary:first-of-type {
+            list-style-type: none;
+        }
+        details > summary {
+            list-style: none;
+        }
+        details > summary::marker {
+            display: none;
+        }
+    </style>
 </head>
 <body>
 
@@ -42,168 +55,99 @@
             </div> 
           </div>
     </nav>
-
-    <div id="content">
-        <label for="my-modal-2" class="btn btn-primary btn-active m-5">Add account</label> 
-        <input type="checkbox" id="my-modal-2" class="modal-toggle"> 
-            <div class="modal">
-            <div class="modal-box">
-
-                <div class="form-control">
-                    <!-- Email -->
-                    <label class="label">
-                        <span class="label-text">Email address*</span>
-                    </label> 
-                    <input type="email" placeholder="Email address" class="input input-bordered">
-
-                    <!-- Password -->
-                    <label class="label">
-                        <span class="label-text">Password*</span>
-                    </label> 
-                        <input type="password" placeholder="password" class="input input-bordered">
-                    
-                    <!-- Account type -->
-                    <!-- <label class="label">
-                        <span class="label-text">Account type*</span>
-                    </label> 
-                    <select class="select select-bordered w-full max-w-xs">
-                        <option disabled="disabled" selected="selected"></option> 
-                        <option>Mojang</option> 
-                        <option>Microsoft</option> 
-                        <option>Microsoft, Giftcard</option>
-                      </select> -->
-
-                    <!-- Group -->
-                    <label class="label">
-                        <span class="label-text">Group</span>
-                    </label> 
-                        <input type="text" list="groups" placeholder="None" class="input input-bordered">
-                        <datalist id="groups">
-                            <option value="GCs">
-                            <option value="Capes">
-                          </datalist>
-
-                    <div class="modal-action">
-                        <label for="my-modal-2" class="btn btn-primary">Save account</label> 
-                        <label for="my-modal-2" class="btn">Close</label>
-                    </div>
-                </div>
-            </div>
-            </div>
-
-            <label for="my-modal-3" class="btn btn-primary btn-active">Add multiple</label> 
-            <input type="checkbox" id="my-modal-3" class="modal-toggle"> 
-                <div class="modal">
-                <div class="modal-box">
     
-                    <div class="form-control">
-                        <!-- Combos -->
-                        <label class="label">
-                            <span class="label-text">Accounts (email:password)</span>
-                        </label>
-                        <textarea class="textarea textarea-bordered" placeholder="email:password" rows="4"></textarea>
 
+    <div class="modal modal-open">
+        <div class="modal-box">
+            <h1 class="text-2xl">Logs for 
+                <span class="kbd">wow</span>
+            </h1>
 
-                        <!-- Account type -->
-                        <!-- <label class="label">
-                            <span class="label-text">Type of accounts*</span>
-                        </label> 
-                        <select class="select select-bordered w-full max-w-xs">
-                            <option disabled="disabled" selected="selected"></option> 
-                            <option>Mojang</option> 
-                            <option>Microsoft</option> 
-                            <option>Microsoft, Giftcard</option>
-                          </select> -->
-    
-                        <!-- Group -->
-                        <label class="label">
-                            <span class="label-text">Group</span>
-                        </label> 
-                            <input type="text" list="groups" placeholder="None" class="input input-bordered">
-                            <datalist id="groups">
-                                <option value="GCs">
-                                <option value="Capes">
-                              </datalist>
-    
-                        <div class="modal-action">
-                            <label for="my-modal-3" class="btn btn-primary">Save account</label> 
-                            <label for="my-modal-3" class="btn">Close</label>
+            <div class="m-2 p-5">
+                <div class="bg-error p-2 rounded-md shadow mt-4">
+                    <details>
+                        <summary>
+                            <h1 class="text-md font-mono">ThisIsALongEmail@gmail.com</h1>
+                            <h2 class="text-sm font-mono">127.0.0.1</h2>
+                        </summary>
+                        <div class="font-mono text-sm mt-2 p-3 bg-neutral ">
+                            <p>[2019-12-31T23:59:59.999] <span class="text-error">403</span></p>
+                            <p>[2019-12-31T23:59:59.999] <span class="text-error">403</span></p>
                         </div>
-                    </div>
+                    </details>
                 </div>
+
+                <div class="bg-success p-2 rounded-md shadow mt-4">
+                    <details>
+                        <summary>
+                            <h1 class="text-md font-mono">ThisIsAnotherEmail@gmail.com</h1>
+                            <h2 class="text-sm font-mono">127.0.0.1</h2>
+                        </summary>
+                        <div class="font-mono text-sm mt-2 p-3 bg-neutral ">
+                            <p>[2019-12-31T23:59:59.999] <span class="text-error">403</span></p>
+                            <p>[2019-12-31T23:59:59.999] <span class="text-success">200</span></p>
+                        </div>
+                    </details>
+                </div>
+
+
+
             </div>
-        
-        <div class="mx-5">
+
+            <div class="modal-action">
+                <label for="my-modal-2" class="btn">Done</label>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="mx-5">
         <table class="table mx-auto w-full table-zebra border border-primary">
             <thead>
               <tr>
-                <th>E-Mail</th> 
-                <th>Type</th> 
-                <th>Usable</th> 
-                <th>Group</th>
+                <th>Name</th> 
+                <th>Total requests</th> 
+                <th>Delay used</th>
+                <th>Success</th> 
               </tr>
             </thead> 
             <tbody>
-              <tr>
-                <td>account@email.com</td> 
-                <td>Mojang</td> 
+              <tr class="hover">
+                <td>wow</td> 
+                <td>60</td>
+                <td>10</td>
                 <td>
                     <span class="text-green-500">
                         Yes
                     </span>
                 </td>
-                <td>
-                    Capes
-                </td>
               </tr>
-              <tr>
-                <td>anotheraccount@email.de</td> 
-                <td>Giftcard</td>
-                <td>
-                    <span class="text-green-500">
-                        Yes
-                    </span>
-                </td>
-                <td>
-                    <span class="text-red-500">
-                        None
-                    </span>
-                </td>
-              </tr>
-              <tr>
-                <td>peet@peet.ws</td> 
-                <td>Microsoft</td>
+              <tr class="hover">
+                <td>peet</td> 
+                <td>15</td>
+                <td>8</td>
                 <td>
                     <span class="text-red-500">
                         No
                     </span>
                 </td>
+              </tr>
+              <tr class="hover">
+                <td>kqzz</td> 
+                <td>2</td>
+                <td>20</td>
+
                 <td>
-                    Capes
+                    <span class="text-red-500">
+                        No
+                    </span>
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
     </div>
-    
-</body>
 
-<script>
-  window.onload = function() {
-  var minute = 5;
-  var sec = 60;
-  setInterval(function() {
-    document.getElementById("timer").innerHTML = minute + ":" + sec;
-    sec--;
-    if (sec == 00) {
-      minute --;
-      sec = 60;
-      if (minute == 0) {
-        minute = 5;
-      }
-    }
-  }, 1000);
-}
-</script>
+</body>
 </html>
