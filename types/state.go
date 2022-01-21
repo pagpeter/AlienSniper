@@ -32,7 +32,7 @@ type State struct {
 }
 
 func (s *State) ToJson() []byte {
-	b, _ := json.Marshal(s)
+	b, _ := json.MarshalIndent(s, "", "  ")
 	return b
 }
 
@@ -44,6 +44,8 @@ func (s *State) LoadState() {
 	data, err := utils.ReadFile("host_state.json")
 	if err != nil {
 		log.Println("No state file found, creating new one.")
+		s.Config = Config{}
+		s.Config.LoadFromFile()
 		s.SaveState()
 		return
 	}

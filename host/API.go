@@ -99,6 +99,7 @@ func ConnectionHandler(c *websocket.Conn) {
 		err = p.Decode(message)
 		if err != nil {
 			log.Println("decode:", err, c.RemoteAddr().String())
+			log.Println("message:", string(message))
 			errp := tmp.MakeError("Error decoding message")
 			c.WriteMessage(websocket.TextMessage, errp.Encode())
 			break

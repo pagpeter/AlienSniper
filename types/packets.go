@@ -36,7 +36,7 @@ type Account struct {
 	Type     string   `json:"type"`
 	Lines    []string `json:"lines,omitempty"`
 	Group    string   `json:"group,omitempty"`
-	Usable   string   `json:"usable,omitempty"`
+	Status   string   `json:"status,omitempty"`
 	Security string   `json:"sq,omitempty"`
 }
 

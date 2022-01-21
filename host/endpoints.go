@@ -1,7 +1,6 @@
 package host
 
 import (
-	utils "Alien/shared"
 	types "Alien/types"
 	"strings"
 )
@@ -24,10 +23,11 @@ func add_account_endpoint(p types.Packet) types.Packet {
 		return res
 	}
 
-	if !utils.IsInMap(p.Content.Account.Type, RequestMap) {
-		res.Content.Response.Error = "Invalid account type"
-		return res
-	}
+	// if !utils.IsInMap(p.Content.Account.Type, RequestMap) {
+	// 	res.Content.Response.Error = "Invalid account type"
+	// 	return res
+	// }
+
 	if p.Content.Account == (nil) {
 		res.Content.Response.Error = "No account provided"
 		return res
@@ -60,11 +60,10 @@ func add_multiple_accounts_endpoint(p types.Packet) types.Packet {
 		return res
 	}
 
-	if !utils.IsInMap(p.Content.Account.Type, RequestMap) {
-		res.Content.Response.Error = "Invalid account type"
-		return res
-	}
-
+	// if !utils.IsInMap(p.Content.Account.Type, RequestMap) {
+	// 	res.Content.Response.Error = "Invalid account type"
+	// 	return res
+	// }
 	c := 0
 	for _, line := range p.Content.Account.Lines {
 		data := strings.Split(line, ":")

@@ -56,13 +56,13 @@
                     <label class="label">
                         <span class="label-text">Email address*</span>
                     </label> 
-                    <input type="email" placeholder="Email address" class="input input-bordered">
+                    <input type="email" id="account_email" placeholder="Email address" class="input input-bordered">
 
                     <!-- Password -->
                     <label class="label">
                         <span class="label-text">Password*</span>
                     </label> 
-                        <input type="password" placeholder="password" class="input input-bordered">
+                        <input type="password" id="account_password" placeholder="password" class="input input-bordered">
                     
                     <!-- Account type -->
                     <!-- <label class="label">
@@ -79,14 +79,14 @@
                     <label class="label">
                         <span class="label-text">Group</span>
                     </label> 
-                        <input type="text" list="groups" placeholder="None" class="input input-bordered">
+                        <input type="text" id="account_group" list="groups" placeholder="None" class="input input-bordered">
                         <datalist id="groups">
                             <option value="GCs">
                             <option value="Capes">
                           </datalist>
 
                     <div class="modal-action">
-                        <label for="my-modal-2" class="btn btn-primary">Save account</label> 
+                        <button onclick="add_account_handler()" for="my-modal-2" class="btn btn-primary">Save account</button> 
                         <label for="my-modal-2" class="btn">Close</label>
                     </div>
                 </div>
@@ -103,7 +103,7 @@
                         <label class="label">
                             <span class="label-text">Accounts (email:password)</span>
                         </label>
-                        <textarea class="textarea textarea-bordered" placeholder="email:password" rows="4"></textarea>
+                        <textarea id="mass_accounts" class="textarea textarea-bordered" placeholder="email:password" rows="4"></textarea>
 
 
                         <!-- Account type -->
@@ -121,14 +121,14 @@
                         <label class="label">
                             <span class="label-text">Group</span>
                         </label> 
-                            <input type="text" list="groups" placeholder="None" class="input input-bordered">
+                            <input id="mass_accounts_group" type="text" list="groups" placeholder="None" class="input input-bordered">
                             <datalist id="groups">
                                 <option value="GCs">
                                 <option value="Capes">
                               </datalist>
     
                         <div class="modal-action">
-                            <label for="my-modal-3" class="btn btn-primary">Save account</label> 
+                            <button onclick="mass_add_accounts_handler()" for="my-modal-3" class="btn btn-primary">Save accounts</button> 
                             <label for="my-modal-3" class="btn">Close</label>
                         </div>
                     </div>
@@ -145,20 +145,9 @@
                 <th>Group</th>
               </tr>
             </thead> 
-            <tbody>
-              <tr>
-                <td>account@email.com</td> 
-                <td>Mojang</td> 
-                <td>
-                    <span class="text-green-500">
-                        Yes
-                    </span>
-                </td>
-                <td>
-                    Capes
-                </td>
-              </tr>
-              <tr>
+            <tbody id="accounts_list">
+             
+              <!-- <tr>
                 <td>anotheraccount@email.de</td> 
                 <td>Giftcard</td>
                 <td>
@@ -183,29 +172,11 @@
                 <td>
                     Capes
                 </td>
-              </tr>
+              </tr> -->
             </tbody>
           </table>
         </div>
     </div>
     
 </body>
-
-<script>
-  window.onload = function() {
-  var minute = 5;
-  var sec = 60;
-  setInterval(function() {
-    document.getElementById("timer").innerHTML = minute + ":" + sec;
-    sec--;
-    if (sec == 00) {
-      minute --;
-      sec = 60;
-      if (minute == 0) {
-        minute = 5;
-      }
-    }
-  }, 1000);
-}
-</script>
 </html>
