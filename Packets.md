@@ -55,12 +55,27 @@ content:
 ```json
 {
     "account": {
-        "acc_type": <account type>,
+        "type": <account type>,
         "password": <account password>,
         "email": <account email>
     }
 }
 ```
+
+### Mass add account
+The `add_multiple_accounts` packet can be used to add multiple accounts at once.
+
+content:
+```json
+{
+    "account": {
+        "lines": [
+            "user:pass",
+            "user2:pass2",
+        ],
+        "type": <account type>
+    }
+}
 
 ### Remove account
 the `remove_account` packet is send to remove an account.
@@ -90,7 +105,7 @@ content:
 
 ### Response
 
-The `response` packet is send from the host to a node. 
+The `***_response` packet is send from the host to a node. It starts with the type of the request.
 
 content:
 ```json
@@ -105,3 +120,12 @@ content:
 ### Get state
 
 The `get_state` packet gets the full state of the host. This includes the queue, accounts, config, etc.
+
+### Authenticated account
+
+The `account_authenticated` packet is send from the host to all clients. It signals that an account got authenticated.
+
+```json
+{
+    
+}
