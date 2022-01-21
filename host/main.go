@@ -24,7 +24,11 @@ func AuthThread() {
 		if acc.AuthInterval > 0 {
 			if time.Now().Unix() > acc.LastAuthed+acc.AuthInterval {
 				go func(acc *types.StoredAccount) {
-					acc.Bearer = auth.Auth(acc.Email, acc.Password, acc.Type, types.Packet{})
+					acc.Usable = false
+					acc.Bearer, acc.Type = Auth(acc.Email, acc.Password, acc.Type, types.Packet{})
+					if acc.Bearer != "" {
+						acc.Usable = true
+					}
 					acc.LastAuthed = time.Now().Unix()
 					state.SaveState()
 				}(&acc)

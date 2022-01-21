@@ -43,19 +43,19 @@ type accessTokenResp struct {
 }
 
 var (
-	state      types.State
-	RequestMap map[string]int = map[string]int{
-		"mojang":    state.Config.Requests.Mojang,
-		"giftcard":  state.Config.Requests.Giftcard,
-		"microsoft": state.Config.Requests.Microsoft,
-	}
+	// RequestMap map[string]int = map[string]int{
+	// 	"mojang":    state.Config.Requests.Mojang,
+	// 	"giftcard":  state.Config.Requests.Giftcard,
+	// 	"microsoft": state.Config.Requests.Microsoft,
+	// }
 	redirect string
 	i        int
 	g        int
 )
 
-func Auth(email, password, info string, p types.Packet) types.StoredAccount {
-	var use string
+func Auth(email, password, info string, p types.Packet) (string, string) {
+	// returns account type, bearer
+	var use bool
 	var acctype string
 	var bearer string
 
@@ -202,7 +202,7 @@ func Auth(email, password, info string, p types.Packet) types.StoredAccount {
 				var accountT string
 				conn, _ := tls.Dial("tcp", "api.minecraftservices.com"+":443", nil)
 
-				fmt.Fprintln(conn, "GET /minecraft/profile/namechange HTTP/1.1\r\nHost: api.minecraftservices.com\r\nUser-Agent: Dismal/1.0\r\nAuthorization: Bearer "+bearerMS.Bearer+"\r\n\r\n")
+				fmt.Fprintln(conn, "GET /minecraft/profile/namechange HTTP/1.1\r\nHost: api.minecraftservices.com\r\nUser-Agent: Alien/1.0\r\nAuthorization: Bearer "+bearerMS.Bearer+"\r\n\r\n")
 
 				e := make([]byte, 12)
 				conn.Read(e)
@@ -218,10 +218,10 @@ func Auth(email, password, info string, p types.Packet) types.StoredAccount {
 
 			bearer = bearerMS.Bearer
 			acctype = accountType
-			use = "Yes"
+			use = true
 			i++
 		} else {
-			use = "No"
+			use = false
 		}
 	} else {
 		if g == 10 {
@@ -242,7 +242,7 @@ func Auth(email, password, info string, p types.Packet) types.StoredAccount {
 
 		req, _ := http.NewRequest("POST", "https://authserver.mojang.com/authenticate", bytes.NewBuffer(bytesToSend))
 		req.Header.Set("Content-Type", "application/json")
-		req.Header.Set("User-Agent", "MCSN/1.0")
+		req.Header.Set("User-Agent", "Alien/1.0")
 
 		res, _ := http.DefaultClient.Do(req)
 
@@ -254,7 +254,7 @@ func Auth(email, password, info string, p types.Packet) types.StoredAccount {
 			if len(strings.Split(info, ":")) != 5 {
 				bearer = *access.AccessToken
 				acctype = "microsoft"
-				use = "Yes"
+				use = true
 			} else {
 				req, _ = http.NewRequest("GET", "https://api.mojang.com/user/security/challenges", nil)
 
@@ -275,27 +275,29 @@ func Auth(email, password, info string, p types.Packet) types.StoredAccount {
 					if resp.StatusCode == 204 {
 						bearer = *access.AccessToken
 						acctype = "mojang"
-						use = "Yes"
+						use = true
 					}
 				}
 			}
 		} else {
-			use = "No"
+			use = false
 		}
 		g++
 	}
 
-	acc := types.StoredAccount{
-		Email:        email,
-		Password:     password,
-		Type:         acctype,
-		Group:        p.Content.Account.Group,
-		Usable:       use,
-		Bearer:       bearer,
-		LastAuthed:   time.Now().Unix(),
-		AuthInterval: 86400,
-		Requests:     RequestMap[acctype],
+	if use {
+		return bearer, acctype
 	}
+	return "", ""
+	// acc := types.StoredAccount{
+	// 	Email:        email,
+	// 	Password:     password,
+	// 	Type:         acctype,
+	// 	Group:        p.Content.Account.Group,
+	// 	Usable:       use,
+	// 	Bearer:       bearer,
+	// 	LastAuthed:   time.Now().Unix(),
+	// 	AuthInterval: 86400,
+	// }
 
-	return acc
 }

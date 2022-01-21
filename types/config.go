@@ -65,10 +65,10 @@ func Configure() Config {
 		fmt.Println("\nUsing port 20514")
 	}
 
-	c.Requests.Giftcard = utils.ToInt(utils.Input(fmt.Sprintf("Giftcard requests (6):\n> ")))
+	c.Requests.Giftcard = utils.ToInt(utils.Input(fmt.Sprintf("Giftcard requests (2):\n> ")))
 	if c.Requests.Giftcard == 0 {
-		c.Requests.Giftcard = 6
-		fmt.Println("\nUsing 6 giftcard requests")
+		c.Requests.Giftcard = 2
+		fmt.Println("\nUsing 2 giftcard requests")
 	}
 
 	c.Requests.Mojang = utils.ToInt(utils.Input(fmt.Sprintf("Mojang requests (2):\n> ")))
