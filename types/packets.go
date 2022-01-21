@@ -27,7 +27,11 @@ type Response struct {
 }
 
 type Task struct {
-	Type string `json:"type"`
+	Type     string     `json:"type"`
+	Name     string     `json:"name"`
+	Unix     int64      `json:"unix,omitempty"`
+	Group    string     `json:"group,omitempty"`
+	Accounts []*Account `json:"accounts,omitempty"`
 }
 
 type Account struct {

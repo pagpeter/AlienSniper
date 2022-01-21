@@ -24,11 +24,13 @@ type QueuedTask struct {
 	Name      string         `json:"name,omitempty"`
 	Account   *StoredAccount `json:"account,omitempty"`
 	Timestamp int64          `json:"timestamp,omitempty"`
+	Searches  int            `json:"searches,omitempty"`
 }
 
 type State struct {
 	Config   Config          `json:"config,omitempty"`
 	Accounts []StoredAccount `json:"accounts,omitempty"`
+	Tasks    []QueuedTask    `json:"tasks,omitempty"`
 }
 
 func (s *State) ToJson() []byte {

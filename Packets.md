@@ -89,7 +89,7 @@ content:
 }
 ```
 
-### Task
+### Add task
 
 The `task` packet is send from a node to a host.
 For example, this could be a command to snipe a name with specified bearers.
@@ -97,7 +97,7 @@ For example, this could be a command to snipe a name with specified bearers.
 content:
 ```json
 {
-    "task": {
+    "add_task": {
         "type": <task type>
     } 
 }
@@ -127,5 +127,5 @@ The `account_authenticated` packet is send from the host to all clients. It sign
 
 ```json
 {
-    
+
 }

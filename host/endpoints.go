@@ -2,6 +2,7 @@ package host
 
 import (
 	types "Alien/types"
+	"log"
 	"strings"
 )
 
@@ -105,5 +106,55 @@ func remove_account_endpoint(p types.Packet) types.Packet {
 
 	res.Content.Response.Error = ""
 	res.Content.Response.Message = "Account removed successfully"
+	return res
+}
+
+func add_task_endpoint(p types.Packet) types.Packet {
+	res := types.Packet{}
+	res.Type = "add_task_response"
+	res.Content.Response = &types.Response{}
+	res.Content.Task = &types.Task{}
+
+	log.Println(p)
+
+	if p.Content.Task == (nil) {
+		res.Content.Response.Error = "No task provided"
+		return res
+	}
+
+	if p.Content.Task.Type == "" {
+		res.Content.Response.Error = "No task type provided"
+		return res
+	}
+
+	if p.Content.Task.Type == "snipe" {
+		name := p.Content.Task.Name
+
+		if name == "" {
+			res.Content.Response.Error = "No name provided"
+			return res
+		}
+
+		drop, err := getDroptime(name, "ckm")
+		if err != nil {
+			res.Content.Response.Error = err.Error()
+			return res
+		}
+		res.Content.Task.Unix = drop.Unix()
+		res.Content.Task.Name = name
+		res.Content.Task.Type = "snipe"
+
+		t := types.QueuedTask{
+			Type:      "snipe",
+			Name:      name,
+			Timestamp: drop.Unix(),
+		}
+		state.Tasks = append(state.Tasks, t)
+		go func() {
+			state.SaveState()
+		}()
+	}
+
+	res.Content.Response.Error = ""
 	return res
 }
