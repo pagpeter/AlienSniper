@@ -1,6 +1,9 @@
 package host
 
-import types "Alien/types"
+import (
+	types "Alien/types"
+	"time"
+)
 
 var state types.State
 var RequestMap map[string]int
@@ -13,4 +16,19 @@ func Start() {
 		"microsoft": state.Config.Requests.Microsoft,
 	}
 	StartAPI("localhost:8080")
+}
+
+func AuthThread() {
+	time.Sleep(time.Second * 60)
+	for _, acc := range state.Accounts {
+		if acc.AuthInterval > 0 {
+			if time.Now().Unix() > acc.LastAuthed+acc.AuthInterval {
+				go func(acc *types.StoredAccount) {
+					acc.Bearer = auth.Auth(acc.Email, acc.Password, acc.Type, types.Packet{})
+					acc.LastAuthed = time.Now().Unix()
+					state.SaveState()
+				}(&acc)
+			}
+		}
+	}
 }

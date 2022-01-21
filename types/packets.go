@@ -13,6 +13,7 @@ type Content struct {
 	Response *Response `json:"response,omitempty"`
 	Task     *Task     `json:"task,omitempty"`
 	Account  *Account  `json:"account,omitempty"`
+	Remove   *Remove   `json:"remove,omitempty"`
 }
 
 type Packet struct {
@@ -30,9 +31,17 @@ type Task struct {
 }
 
 type Account struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-	Type     string `json:"type"`
+	Email    string   `json:"email"`
+	Password string   `json:"password"`
+	Type     string   `json:"type"`
+	Lines    []string `json:"lines,omitempty"`
+	Group    string   `json:"group,omitempty"`
+	Usable   string   `json:"usable,omitempty"`
+	Security string   `json:"sq,omitempty"`
+}
+
+type Remove struct {
+	Email string `json:"email"`
 }
 
 func (p *Packet) Encode() []byte {

@@ -10,7 +10,7 @@ type StoredAccount struct {
 	Email        string `json:"email"`
 	Password     string `json:"password"`
 	Type         string `json:"type"`
-	Requests     int    `json:"requests,omitempty"`
+	// Requests     int    `json:"requests,omitempty"`
 	Bearer       string `json:"bearer,omitempty"`
 	LastAuthed   int64  `json:"last_authed,omitempty"`
 	AuthInterval int64  `json:"auth_interval,omitempty"`

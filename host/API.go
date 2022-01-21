@@ -105,5 +105,9 @@ func ConnectionHandler(c *websocket.Conn) {
 		}
 		res := HandlePacket(p)
 		err = c.WriteMessage(websocket.TextMessage, res.Encode())
+		if err != nil {
+			log.Println("write:", err, c.RemoteAddr().String())
+			break
+		}
 	}
 }
