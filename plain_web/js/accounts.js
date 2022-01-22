@@ -7,9 +7,9 @@ let accounts = []
 const get_account_html = (acc) => {
     // acc = { email: '', password: '', type: '' group: '', status: '' }
     let status_color = "red";
-    if (acc.usable == "yes") {
+    if (acc.type == "yes") {
         status_color = "green";
-    } else if (acc.usable == "Pending...") {
+    } else if (acc.type == "Pending...") {
         status_color = "yellow";
     }
 
@@ -19,7 +19,7 @@ const get_account_html = (acc) => {
     <td>${acc.type}</td> 
     <td>
         <span class="text-${status_color}-500">
-            ${acc.status}
+            ${acc.type}
         </span>
     </td>
     <td>
