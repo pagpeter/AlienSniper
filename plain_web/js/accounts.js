@@ -7,13 +7,12 @@ let accounts = []
 const get_account_html = (acc) => {
     // acc = { email: '', password: '', type: '' group: '', status: '' }
     let status_color = "red";
-    let usable = "no";
+    let usable = "No";
     if ((acc.type != "Pending...") && (acc.type)) {
         status_color = "green";
-        usable = "yes";
+        usable = "Yes";
     }
 
-    console.log(usable, status_color, acc);
     return `
     <tr>
     <td>${acc.email}</td> 
