@@ -2,6 +2,7 @@ package host
 
 import (
 	types "Alien/types"
+	"log"
 	"time"
 )
 
@@ -15,14 +16,16 @@ func Start() {
 		"giftcard":  state.Config.Requests.Giftcard,
 		"microsoft": state.Config.Requests.Microsoft,
 	}
+	go AuthThread()
 	StartAPI("localhost:8080")
 }
 
 func AuthThread() {
-	time.Sleep(time.Second * 60)
+	time.Sleep(time.Second * 10)
 	for _, acc := range state.Accounts {
 		if acc.AuthInterval > 0 {
 			if time.Now().Unix() > acc.LastAuthed+acc.AuthInterval {
+				log.Println("[Auth]", acc.Username, "is due for auth")
 				go func(acc *types.StoredAccount) {
 					acc.Usable = false
 					acc.Bearer, acc.Type = Auth(acc.Email, acc.Password, acc.Type, types.Packet{})

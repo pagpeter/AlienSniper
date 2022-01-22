@@ -7,6 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/daisyui@1.24.3/dist/full.css" rel="stylesheet" type="text/css" />
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2/dist/tailwind.min.css" rel="stylesheet" type="text/css" />
+    <script src="/js/utils.js"></script>
+    <script src="/js/tasks.js"></script>
     <title>Tasks | Alien</title>
 </head>
 <body>
@@ -55,19 +57,19 @@
                     <label class="label">
                         <span class="label-text">Name to snipe</span>
                     </label> 
-                    <input type="text" placeholder="username" class="input input-bordered">
+                    <input id="task_name" type="text" placeholder="username" class="input input-bordered">
 
                     <label class="label">
                         <span class="label-text">Group to use</span>
                     </label> 
-                    <input type="text" list="groups" placeholder="None" class="input input-bordered">
+                    <input id="task_group" type="text" list="groups" placeholder="None" class="input input-bordered">
                     <datalist id="groups">
                         <option value="GCs">
                         <option value="Capes">
                       </datalist>
 
                     <div class="modal-action">
-                        <label for="my-modal-2" class="btn btn-primary">Add to queue</label> 
+                        <button onclick="add_task_handler()" for="my-modal-2" class="btn btn-primary">Add to queue</button> 
                         <label for="my-modal-2" class="btn">Close</label>
                     </div>
                 </div>
@@ -84,17 +86,8 @@
                 <th>Group to use</A></th>
               </tr>
             </thead> 
-            <tbody>
-              <tr>
-                <td>SuperOG123</td> 
-                <td>
-                    <span class="font-mono">
-                        3h 12min 16sec
-                    </span>
-                </td> 
-                <td>165</td>
-                <td>All</td>
-              </tr>
+            <tbody id="task_list">
+<!--          
               <tr>
                 <td>VeryOgName</td> 
                 <td>
@@ -124,7 +117,7 @@
                 </td>
                 <td>1248</td>
                 <td>Capes</td>
-              </tr>
+              </tr> -->
             </tbody>
           </table>
         </div>
@@ -133,20 +126,20 @@
 </body>
 
 <script>
-  window.onload = function() {
-  var minute = 5;
-  var sec = 60;
-  setInterval(function() {
-    document.getElementById("timer").innerHTML = minute + ":" + sec;
-    sec--;
-    if (sec == 00) {
-      minute --;
-      sec = 60;
-      if (minute == 0) {
-        minute = 5;
-      }
-    }
-  }, 1000);
-}
+//   window.onload = function() {
+//   var minute = 5;
+//   var sec = 60;
+//   setInterval(function() {
+//     document.getElementById("timer").innerHTML = minute + ":" + sec;
+//     sec--;
+//     if (sec == 00) {
+//       minute --;
+//       sec = 60;
+//       if (minute == 0) {
+//         minute = 5;
+//       }
+//     }
+//   }, 1000);
+// }
 </script>
 </html>

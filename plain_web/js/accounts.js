@@ -35,9 +35,9 @@ const add_account_html = (acc) => {
 }
 
 const add_account_handler = () => {
-    const email = document.getElementById('account_email').value;
-    const password = document.getElementById('account_password').value;
-    const group = document.getElementById('account_group').value;
+    const email = document.getElementById('account_email').value.trim();
+    const password = document.getElementById('account_password').value.trim();
+    const group = document.getElementById('account_group').value.trim();
 
     const account = {
         email: email,

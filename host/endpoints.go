@@ -134,6 +134,7 @@ func add_task_endpoint(p types.Packet) types.Packet {
 
 	if p.Content.Task.Type == "snipe" {
 		name := p.Content.Task.Name
+		group := p.Content.Task.Group
 
 		if name == "" {
 			res.Content.Response.Error = "No name provided"
@@ -152,14 +153,16 @@ func add_task_endpoint(p types.Packet) types.Packet {
 			res.Content.Response.Error = err.Error()
 			return res
 		}
-		res.Content.Task.Unix = drop.Unix()
+		res.Content.Task.Timestamp = drop.Unix()
 		res.Content.Task.Name = name
 		res.Content.Task.Type = "snipe"
+		res.Content.Task.Group = group
 
 		t := types.QueuedTask{
 			Type:      "snipe",
 			Name:      name,
 			Timestamp: drop.Unix(),
+			Group:     group,
 		}
 		state.Tasks = append(state.Tasks, t)
 		go func() {

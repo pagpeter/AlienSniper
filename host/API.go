@@ -89,6 +89,11 @@ func ConnectionHandler(c *websocket.Conn) {
 
 	for {
 		_, message, err := c.ReadMessage()
+		if err != nil {
+			log.Println("read:", err)
+			c.Close()
+			break
+		}
 		go func() {
 			if err != nil {
 				log.Println("message read:", err, c.RemoteAddr().String())
