@@ -25,7 +25,7 @@ func AuthThread() {
 	for _, acc := range state.Accounts {
 		if acc.AuthInterval > 0 {
 			if time.Now().Unix() > acc.LastAuthed+acc.AuthInterval {
-				log.Println("[Auth]", acc.Username, "is due for auth")
+				log.Println("[Auth]", acc.Email, "is due for auth")
 				go func(acc *types.StoredAccount) {
 					acc.Usable = false
 					acc.Bearer, acc.Type = Auth(acc.Email, acc.Password, acc.Type, types.Packet{})

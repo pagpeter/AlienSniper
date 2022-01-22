@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 func GetIP() string {
@@ -52,10 +53,13 @@ func IsInMap(key string, m map[string]int) bool {
 	return ok
 }
 
+var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+
 func GenerateToken(length int) string {
-	var token string
-	for i := 0; i < length; i++ {
-		token += string(rune(65 + rand.Intn(25)))
+	rand.Seed(time.Now().UnixNano())
+	b := make([]rune, length)
+	for i := range b {
+		b[i] = letterRunes[rand.Intn(len(letterRunes))]
 	}
-	return token
+	return string(b)
 }

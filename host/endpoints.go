@@ -86,6 +86,7 @@ func add_multiple_accounts_endpoint(p types.Packet) types.Packet {
 		}
 		state.Accounts = append(state.Accounts, acc)
 	}
+	state.SaveState()
 	res.Content.Response.Error = ""
 	res.Content.Response.Message = string(c) + " account(s) added successfully"
 	return res
