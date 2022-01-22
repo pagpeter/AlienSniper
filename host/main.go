@@ -29,27 +29,60 @@ func AuthThread() {
 			if acc.AuthInterval > 0 {
 				if time.Now().Unix() > acc.LastAuthed+acc.AuthInterval {
 					log.Println("[Auth]", acc.Email, "is due for auth")
-					go func(acc *types.StoredAccount) {
-						acc.Usable = false
-						acc.Bearer, acc.Type = Auth(acc.Email, acc.Password, acc.Type, types.Packet{})
-						if acc.Bearer != "" {
-							acc.Usable = true
-						}
-						log.Println("[Auth]", acc.Email, "is usable:", acc.Usable)
+					// go func(tmpacc *types.StoredAccount) {
+
+					// by default, the account isnt usable
+					acc.Usable = false
+					// authenticated account
+					acc.Bearer, acc.Type = Auth(acc.Email, acc.Password, acc.Type, types.Packet{})
+					log.Println("[Auth]", acc.Email, "is usable:", acc.Usable)
+
+					// if the account is usable, update the last authed time
+					if acc.Bearer != "" {
 						acc.LastAuthed = time.Now().Unix()
-						// log.Println(acc, acc.Bearer, acc.LastAuthed)
-
-						var tmpaccs []types.StoredAccount
-						for _, i := range state.Accounts {
-							if i.Email != acc.Email {
-								tmpaccs = append(tmpaccs, i)
-							}
-						}
-						state.Accounts = tmpaccs
-						state.Accounts = append(state.Accounts, *acc)
-
+						acc.Usable = true
 						state.SaveState()
-					}(&acc)
+						continue // continue to next account
+					}
+
+					// if the account isnt usable, remove it from the list
+					var ts []types.StoredAccount
+					for _, i := range state.Accounts {
+						if i.Email != acc.Email {
+							ts = append(ts, i)
+						}
+					}
+					state.Accounts = ts
+					state.SaveState()
+
+					// if tmpacc.Bearer != "" {
+					// 	tmpacc.Usable = true
+					// } else {
+					// 	var tmpaccs []types.StoredAccount
+					// 	for _, i := range state.Accounts {
+					// 		if i.Email != tmpacc.Email {
+					// 			tmpaccs = append(tmpaccs, i)
+					// 		}
+					// 		state.Accounts = tmpaccs
+					// 		state.Accounts = append(state.Accounts, *tmpacc)
+					// 		state.SaveState()
+					// 		return
+					// 	}
+					// }
+					// tmpacc.LastAuthed = time.Now().Unix()
+					// // log.Println(tmpacc, tmpacc.Bearer, tmpacc.LastAuthed)
+
+					// var tmpaccs []types.StoredAccount
+					// for _, i := range state.Accounts {
+					// 	if i.Email != tmpacc.Email {
+					// 		tmpaccs = append(tmpaccs, i)
+					// 	}
+					// }
+					// state.Accounts = tmpaccs
+					// state.Accounts = append(state.Accounts, *tmpacc)
+
+					// state.SaveState()
+					// }(&acc)
 				}
 			}
 		}
