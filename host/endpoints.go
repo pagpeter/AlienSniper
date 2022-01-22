@@ -72,6 +72,11 @@ func add_multiple_accounts_endpoint(p types.Packet) types.Packet {
 			res.Content.Response.Error = "Invalid format"
 			return res
 		}
+		if len(data[0]) == 0 || len(data[1]) == 0 {
+			res.Content.Response.Error = "At least 1 empty account provided"
+			continue
+		}
+
 		c++
 		acc := types.StoredAccount{
 			Email:        data[0],
@@ -135,7 +140,14 @@ func add_task_endpoint(p types.Packet) types.Packet {
 			return res
 		}
 
-		drop, err := getDroptime(name, "ckm")
+		for _, t := range state.Tasks {
+			if t.Name == name {
+				res.Content.Response.Error = "Task with that name already exists"
+				return res
+			}
+		}
+
+		drop, err := getDroptime(name, "star.shopping")
 		if err != nil {
 			res.Content.Response.Error = err.Error()
 			return res

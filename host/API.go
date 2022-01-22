@@ -10,6 +10,7 @@ import (
 )
 
 var upgrader = websocket.Upgrader{}
+var connections []*websocket.Conn
 var tmp types.Packet
 
 func home(w http.ResponseWriter, r *http.Request) {
@@ -88,27 +89,30 @@ func ConnectionHandler(c *websocket.Conn) {
 
 	for {
 		_, message, err := c.ReadMessage()
-		if err != nil {
-			log.Println("message read:", err, c.RemoteAddr().String())
-			errp := tmp.MakeError("Error reading message")
-			c.WriteMessage(websocket.TextMessage, errp.Encode())
-			break
-		}
-		// log.Printf("recv: %s", message)
-		var p types.Packet
-		err = p.Decode(message)
-		if err != nil {
-			log.Println("decode:", err, c.RemoteAddr().String())
-			log.Println("message:", string(message))
-			errp := tmp.MakeError("Error decoding message")
-			c.WriteMessage(websocket.TextMessage, errp.Encode())
-			break
-		}
-		res := HandlePacket(p)
-		err = c.WriteMessage(websocket.TextMessage, res.Encode())
-		if err != nil {
-			log.Println("write:", err, c.RemoteAddr().String())
-			break
-		}
+		go func() {
+			if err != nil {
+				log.Println("message read:", err, c.RemoteAddr().String())
+				errp := tmp.MakeError("Error reading message")
+				c.WriteMessage(websocket.TextMessage, errp.Encode())
+				return
+			}
+			// log.Printf("recv: %s", message)
+			var p types.Packet
+			err = p.Decode(message)
+			if err != nil {
+				log.Println("decode:", err, c.RemoteAddr().String())
+				log.Println("message:", string(message))
+				errp := tmp.MakeError("Error decoding message")
+				c.WriteMessage(websocket.TextMessage, errp.Encode())
+				return
+			}
+
+			res := HandlePacket(p)
+			err = c.WriteMessage(websocket.TextMessage, res.Encode())
+			if err != nil {
+				log.Println("write:", err, c.RemoteAddr().String())
+				return
+			}
+		}()
 	}
 }
