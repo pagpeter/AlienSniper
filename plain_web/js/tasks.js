@@ -41,6 +41,16 @@ const add_task_handler = () => {
     // add_task_html(task);
 }
 
+function modalOpen(id, event) {
+    let modal = document.getElementById(id);
+    modal.classList.add(event)
+}
+
+function modalClose(id, event) {
+    let modal = document.getElementById(id);
+    modal.classList.remove(event)
+}
+
 // make new connection
 let socket = new WebSocket(`ws://${IP}:${PORT}/ws`)
 
@@ -54,6 +64,7 @@ socket.onopen = event => {
 // handle incoming packets
 socket.onmessage = (event) => {
     let packet = JSON.parse(event.data);
+
     switch (packet.type) {
         case 'error':
             console.log(packet.content.error);
@@ -67,6 +78,11 @@ socket.onmessage = (event) => {
             tasks.forEach(task => {
                 add_task_html(task);
             });
+
+            accs = packet.content.state.logs
+            for (const x of accs) {
+                document.getElementById("table1").innerHTML += add_logs(x);
+            }
             break;
         case 'config':
             console.log(packet.content.config);

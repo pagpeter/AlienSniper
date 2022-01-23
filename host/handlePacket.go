@@ -44,6 +44,12 @@ func HandlePacket(p types.Packet) types.Packet {
 
 	case "add_task":
 		return add_task_endpoint(p)
+
+	case "load_tasks":
+		res.Type = "tasks"
+		res.Content.Response = &types.Response{}
+		res.Content.State = &state
+		return res
 	// Invalid packet
 	default:
 		res.Type = "error_response"

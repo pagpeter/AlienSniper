@@ -115,6 +115,12 @@ func remove_account_endpoint(p types.Packet) types.Packet {
 	return res
 }
 
+func grab_logs(p types.Packet) types.Packet {
+	res := types.Packet{}
+	res.Type = "add_tasks"
+	return res
+}
+
 func add_task_endpoint(p types.Packet) types.Packet {
 	res := types.Packet{}
 	res.Type = "add_task_response"
