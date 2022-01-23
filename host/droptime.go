@@ -14,6 +14,37 @@ import (
 
 // Feel free to add your droptime API to this file, the more droptime APIS that are used, the more stable this sniper should be (theoretically)
 
+type droptimeSite struct {
+	Droptime int64 `json:"droptime"`
+}
+
+func droptimeSiteDroptime(username string) (time.Time, error) {
+	resp, err := http.Get(fmt.Sprintf("https://droptime.site/api/v2/name/%v", username))
+
+	if err != nil {
+		return time.Time{}, err
+	}
+	defer resp.Body.Close()
+
+	respBytes, err := ioutil.ReadAll(resp.Body)
+
+	if err != nil {
+		return time.Time{}, err
+	}
+
+	if resp.StatusCode < 300 {
+		var res droptimeSite
+		err = json.Unmarshal(respBytes, &res)
+		if err != nil {
+			return time.Time{}, err
+		}
+
+		return time.Unix(res.Droptime, 0), nil
+	}
+
+	return time.Time{}, fmt.Errorf("failed to grab droptime with status %v and body %v", resp.Status, string(respBytes))
+}
+
 type coolkidmachoRespStruct struct {
 	Unix int64 `json:"UNIX"`
 }
@@ -88,6 +119,7 @@ func starShoppingDroptime(username string) (time.Time, error) {
 
 func getDroptime(username, preference string) (time.Time, error) {
 	apis := map[string]func(string) (time.Time, error){
+		"droptime.site":     droptimeSiteDroptime,
 		"ckm":               coolkidmachoDroptime,
 		"coolkidmacho":      coolkidmachoDroptime,
 		"star.shopping":     starShoppingDroptime,

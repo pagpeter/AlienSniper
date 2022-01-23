@@ -149,7 +149,7 @@ func add_task_endpoint(p types.Packet) types.Packet {
 			}
 		}
 
-		drop, err := getDroptime(name, "star.shopping")
+		drop, err := getDroptime(name, "droptime.site")
 		if err != nil {
 			res.Content.Response.Error = err.Error()
 			return res
