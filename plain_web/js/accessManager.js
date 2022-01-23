@@ -14,7 +14,7 @@ setToken = (token, ip, port) => {
 
 checkIfCanAccess = () => {
     let token = getToken()
-    if (token.token == null) {
+    if (!token.token || !token.ip || !token.port) {
         return false
     } else {
         return true
@@ -73,9 +73,8 @@ popupInputHandler = () => {
 // main
 
 const canAccess = checkIfCanAccess()
-console.log(canAccess)
+console.log("Has access:", canAccess)
 if (!canAccess) {
     const popup = makeInputPopupHTML()
-    console.log(popup)
     showPopup(popup)
 }

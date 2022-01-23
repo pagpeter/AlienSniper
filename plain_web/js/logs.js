@@ -76,7 +76,12 @@ const add_logs = (acc) => {
 
 
 // make new connection
-let socket = new WebSocket(`ws://${t.ip}:${t.port}/ws`)
+let socket = null
+try {
+    socket = new WebSocket(`ws://${t.ip}:${t.port}/ws`)
+} catch (e) {
+    console.log(e);
+}
 
 // send auth packet on open
 socket.onopen = event => {
@@ -111,5 +116,25 @@ socket.onmessage = (event) => {
             break;
         default:
             console.log(packet);
+    }
+}
+
+
+alrShowedError = false;
+socket.onclose = event => {
+    console.log('Disconnected from server', event);
+
+    if (!alrShowedError) {
+        popInfo("There was an error while connecting to the server. Please check if its running and try again.");
+        alrShowedError = true;
+    }
+}
+
+socket.onerror = event => {
+    console.log('Error connecting to server', event);
+    
+    if (!alrShowedError) {
+        popInfo("There was an error while connecting to the server. Please check if its running and try again.");
+        alrShowedError = true;
     }
 }
