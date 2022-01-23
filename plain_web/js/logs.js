@@ -18,9 +18,9 @@ const add_logs = (acc) => {
       }
       logHTML += `
             <p>
-                <span class="text-${
-                  l.statuscode == 200 ? "green" : "red"
-                }-500">[${l.statuscode}]</span>
+                <span class="${
+                  l.statuscode == 200 ? "text-green-500" : "text-red-500"
+                }">[${l.statuscode}]</span>
                 <span>${l.timestamp}</span>
             </p>
             `;
@@ -41,7 +41,7 @@ const add_logs = (acc) => {
   }
 
   statusC = acc.success ? "Yes" : "No";
-  bgC = acc.success ? "green" : "red";
+  bgC = acc.success ? "text-green-500" : "text-red-500";
 
   return `<div id="${acc.name}" class="modal modal-closed">
 
@@ -70,7 +70,7 @@ const add_logs = (acc) => {
     <td class="row-data">${acc.requests}</td>
     <td class="row-data">${acc.delay}</td>
     <td class="row-data">
-        <span class="text-${bgC}-500">
+        <span class="${bgC}">
         ${statusC}
     </span>
     </td>

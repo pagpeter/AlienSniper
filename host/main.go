@@ -2,6 +2,7 @@ package host
 
 import (
 	types "Alien/types"
+	"fmt"
 	"log"
 	"time"
 
@@ -21,7 +22,15 @@ func Start() {
 	}
 	go AuthThread()
 	go TaskThread()
-	StartAPI("localhost:8080")
+
+	if state.Config.Host != "localhost" && state.Config.Host != "127.0.0.1" && state.Config.Host != "0.0.0.0" {
+		log.Println("host can only be localhost or 0.0.0.0. hosting on 0.0.0.0")
+		log.Println("You can change the host and port in the config.")
+		state.Config.Host = "0.0.0.0"
+	}
+
+	addr := fmt.Sprintf("%s:%d", state.Config.Host, state.Config.Port)
+	StartAPI(addr)
 }
 
 // Check if any account has to be authenticated

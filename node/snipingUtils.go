@@ -25,23 +25,38 @@ func PreSleep(dropTime int64) {
 	}
 }
 
-func pingMojang() (float64, error) {
-	payload := "PUT /minecraft/profile/name/test HTTP/1.1\r\nHost: api.minecraftservices.com\r\nAuthorization: Bearer BEARER" + "\r\n"
-	conn, err := tls.Dial("tcp", "api.minecraftservices.com:443", nil)
-	if err != nil {
-	}
-	var sumNanos int64
-	for i := 0; i < 3; i++ {
-		junk := make([]byte, 4096)
-		conn.Write([]byte(payload))
+// lizas implementation
+func pingMojang() float64 {
+	var pingTimes float64
+	conn, _ := tls.Dial("tcp", "api.minecraftservices.com:443", nil)
+
+	for i := 0; i < 10; i++ {
+		junk := make([]byte, 4069)
 		time1 := time.Now()
-		conn.Write([]byte("\r\n"))
+		conn.Write([]byte("PUT /minecraft/profile/name/test HTTP/1.1\r\nHost: api.minecraftservices.com\r\nAuthorization: Bearer TestToken\r\n\r\n"))
 		conn.Read(junk)
-		duration := time.Now().Sub(time1)
-		sumNanos += duration.Nanoseconds()
+		time2 := time.Since(time1)
+		pingTimes += float64(time2.Milliseconds())
 	}
-	conn.Close()
-	sumNanos /= 3
-	avgMillis := float64(sumNanos)/float64(1000000)
-	return avgMillis, nil
+	return float64(pingTimes/10000) * 5000
 }
+
+// GoSnipe/cowbos/kqzz's implementation
+// func pingMojang() (float64) {
+// 	payload := "PUT /minecraft/profile/name/test HTTP/1.1\r\nHost: api.minecraftservices.com\r\nAuthorization: Bearer BEARER" + "\r\n"
+// 	conn, _ := tls.Dial("tcp", "api.minecraftservices.com:443", nil)
+// 	var sumNanos int64
+// 	for i := 0; i < 3; i++ {
+// 		junk := make([]byte, 4096)
+// 		conn.Write([]byte(payload))
+// 		time1 := time.Now()
+// 		conn.Write([]byte("\r\n"))
+// 		conn.Read(junk)
+// 		duration := time.Now().Sub(time1)
+// 		sumNanos += duration.Nanoseconds()
+// 	}
+// 	conn.Close()
+// 	sumNanos /= 3
+// 	avgMillis := float64(sumNanos)/float64(1000000)
+// 	return avgMillis, nil
+// }

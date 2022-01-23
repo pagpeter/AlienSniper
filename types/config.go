@@ -44,7 +44,7 @@ func (c *Config) SaveToFile() {
 func Configure() Config {
 	// Start the configuring process, used to generate a config file
 
-	IP := utils.GetIP()
+	// IP := utils.GetIP()
 	c := Config{}
 
 	fmt.Println("Welcome, we are now configuring Alien for you. ")
@@ -53,16 +53,16 @@ func Configure() Config {
 	c.Token = utils.GenerateToken(20)
 	fmt.Println("Generated token: ", c.Token)
 
-	c.Host = utils.Input(fmt.Sprintf("IP address of host API (%s):\n> ", IP))
+	c.Host = utils.Input("IP address of host API. Use 0.0.0.0 for the host. (0.0.0.0):\n> ")
 	if c.Host == "" {
-		c.Host = IP
+		c.Host = "0.0.0.0"
 		fmt.Println("\nUsing host at: " + c.Host)
 	}
 
-	c.Port = utils.ToInt(utils.Input(fmt.Sprintf("Port of host API (20514):\n> ")))
+	c.Port = utils.ToInt(utils.Input(fmt.Sprintf("Port of host API (21615):\n> ")))
 	if c.Port == 0 {
-		c.Port = 20514
-		fmt.Println("\nUsing port 20514")
+		c.Port = 21615
+		fmt.Println("\nUsing port 21615")
 	}
 
 	c.Requests.Giftcard = utils.ToInt(utils.Input(fmt.Sprintf("Giftcard requests (2):\n> ")))
