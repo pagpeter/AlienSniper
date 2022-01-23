@@ -136,7 +136,6 @@ func add_task_endpoint(p types.Packet) types.Packet {
 	if p.Content.Task.Type == "snipe" {
 		name := p.Content.Task.Name
 		group := p.Content.Task.Group
-
 		if name == "" {
 			res.Content.Response.Error = "No name provided"
 			return res
@@ -154,6 +153,13 @@ func add_task_endpoint(p types.Packet) types.Packet {
 			res.Content.Response.Error = err.Error()
 			return res
 		}
+
+		searches, err := droptimeSiteSearches(name)
+		if err != nil {
+			res.Content.Response.Error = err.Error()
+		}
+
+		res.Content.Task.Searches = searches
 		res.Content.Task.Timestamp = drop.Unix()
 		res.Content.Task.Name = name
 		res.Content.Task.Type = "snipe"
@@ -164,6 +170,7 @@ func add_task_endpoint(p types.Packet) types.Packet {
 			Name:      name,
 			Timestamp: drop.Unix(),
 			Group:     group,
+			Searches:  searches,
 		}
 		state.Tasks = append(state.Tasks, t)
 		go func() {

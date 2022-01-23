@@ -24,7 +24,7 @@ type QueuedTask struct {
 	Name      string         `json:"name,omitempty"`
 	Account   *StoredAccount `json:"account,omitempty"`
 	Timestamp int64          `json:"timestamp,omitempty"`
-	Searches  int            `json:"searches,omitempty"`
+	Searches  string         `json:"searches,omitempty"`
 	Group     string         `json:"group,omitempty"`
 }
 

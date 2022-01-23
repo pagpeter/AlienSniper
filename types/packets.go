@@ -30,6 +30,7 @@ type Task struct {
 	Type      string     `json:"type"`
 	Name      string     `json:"name"`
 	Timestamp int64      `json:"timestamp,omitempty"`
+	Searches  string     `json:"searches,omitempty"`
 	Group     string     `json:"group,omitempty"`
 	Accounts  []*Account `json:"accounts,omitempty"`
 }

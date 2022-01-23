@@ -18,6 +18,37 @@ type droptimeSite struct {
 	Droptime int64 `json:"droptime"`
 }
 
+type Searches struct {
+	Searches string `json:"searches"`
+}
+
+func droptimeSiteSearches(username string) (string, error) {
+	resp, err := http.Get(fmt.Sprintf("https://droptime.site/api/v2/searches/%v", username))
+
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	respBytes, err := ioutil.ReadAll(resp.Body)
+
+	if err != nil {
+		return "", err
+	}
+
+	if resp.StatusCode < 300 {
+		var res Searches
+		err = json.Unmarshal(respBytes, &res)
+		if err != nil {
+			return "", err
+		}
+
+		return res.Searches, nil
+	}
+
+	return "", fmt.Errorf("failed to grab droptime with status %v and body %v", resp.Status, string(respBytes))
+}
+
 func droptimeSiteDroptime(username string) (time.Time, error) {
 	resp, err := http.Get(fmt.Sprintf("https://droptime.site/api/v2/name/%v", username))
 
