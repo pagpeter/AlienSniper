@@ -1,7 +1,4 @@
-const IP = "localhost"
-const PORT = "8080"
-const TOKEN = "GMWJGSAPGATLMODYLUMG"
-
+const t = getToken();
 const add_logs = (acc) => {
     let content = ""
 
@@ -79,12 +76,12 @@ const add_logs = (acc) => {
 
 
 // make new connection
-let socket = new WebSocket(`ws://${IP}:${PORT}/ws`)
+let socket = new WebSocket(`ws://${t.ip}:${t.port}/ws`)
 
 // send auth packet on open
 socket.onopen = event => {
     console.log('Connected to server', event);
-    socket.send(new Packet('auth', { auth: TOKEN }).toJson());
+    socket.send(new Packet('auth', { auth: t.token }).toJson());
     socket.send(new Packet('get_state', {}).toJson());
 }
 

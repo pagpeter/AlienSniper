@@ -2,6 +2,7 @@ package host
 
 import (
 	types "Alien/types"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -15,11 +16,26 @@ var tmp types.Packet
 
 func home(w http.ResponseWriter, r *http.Request) {
 	// Handle the home page
+
+	if r.Method == "OPTIONS" {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+		json.NewEncoder(w).Encode("OK")
+		return
+	}
+
 	fmt.Fprintf(w, "Status: online (duh)")
 }
 
 func wsHandler(w http.ResponseWriter, r *http.Request) {
 	// Handle incomming websocket connections
+
+	if r.Method == "OPTIONS" {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+		json.NewEncoder(w).Encode("OK")
+		return
+	}
 
 	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 
