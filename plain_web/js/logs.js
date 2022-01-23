@@ -1,54 +1,56 @@
 const t = getToken();
-let num = 0;
 
 const add_logs = (acc) => {
-    let content = "";
-
+    var content = "";
     // loop through the logs
     for (const x of acc.sends) {
         // for each log (for each past snipe)
 
-        // assume a background of red
-        let bg = "error";
-
         // create HTML for the requests
-        let logHTML = "";
         x.content.forEach((l) => {
-            if (l.statuscode == 200) {
-                bg = "success";
-            }
-            logHTML += `
-            <p>
-                <span class="${
-                  l.statuscode == 200 ? "text-green-500" : "text-red-500"
-                }">[${l.statuscode}]</span>
-                <span>${l.timestamp}</span>
-            </p>
-            `;
-        });
+            var logHTML = "";
+            l.timestamp.forEach((k) => {
+                console.log(k)
+                time = String(k).split(":")[0];
+                statuscode = String(k).split(":")[1];
 
-        console.log(x.email);
+                if (statuscode == "200") {
+                    bg = "success";
+                } else {
+                    bg = "error";
+                }
 
-        // create HTML for the log thing
-        content += `<div class="bg-${bg} p-2 rounded-md shadow mt-4"><details>
+                logHTML += `
+                  <span class="${
+                    statuscode == "200" ? "text-green-500" : "text-red-500"
+                  }">[${statuscode}]</span>
+                  <span>${time}<br></span>`;
+            });
+
+            content += `<div class="bg-${bg} p-2 rounded-md shadow mt-4"><details>
             <summary>
-                <h1 class="text-md font-mono">${x.email}</h1>
-                <h2 class="text-sm font-mono">${x.ip}</h2>
+                <h1 class="text-md font-mono">${l.email}</h1>
+                <h2 class="text-sm font-mono">${l.ip}</h2>
             </summary>
             <div class="font-mono text-sm mt-2 p-3 bg-neutral ">
                 <p>
+                  <p>
                     ${logHTML}
+                  </p>
                 </p>
             </div>
         </details></div>`;
-    }
+        });
 
-    num = num + 1
+        // create HTML for the log thing
+
+        logHTML = "";
+    }
 
     statusC = acc.success ? "Yes" : "No";
     bgC = acc.success ? "text-green-500" : "text-red-500";
 
-    return `<div id="${acc.name}_${num}" class="modal modal-closed">
+    return `<div id="${acc.name}" class="modal modal-closed">
 
     <div class="modal-box">
         <h1 class="text-2xl">Logs for
@@ -65,12 +67,12 @@ const add_logs = (acc) => {
     
         </div>
         <div class="modal-action">
-            <label onclick="modalClose('${acc.name}_${num}', 'modal-open')" class="btn">Done</label>
+            <label onclick="modalClose('${acc.name}', 'modal-open')" class="btn">Done</label>
         </div>
     </div>
     </div>
     
-    <tr class="hover" onclick="modalOpen('${acc.name}_${num}', 'modal-open')">
+    <tr class="hover" onclick="modalOpen('${acc.name}', 'modal-open')">
     <td class="row-data">${acc.name}</td>
     <td class="row-data">${acc.requests}</td>
     <td class="row-data">${acc.delay}</td>

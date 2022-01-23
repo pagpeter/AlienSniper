@@ -3,7 +3,7 @@ package node
 import (
 	types "Alien/types"
 	"fmt"
-	"strconv"
+	"strings"
 	"sync"
 	"time"
 )
@@ -16,18 +16,14 @@ var (
 
 func StartSniper(timestamp int64, delay int, name string, i int, payload Payload, email string) types.Log {
 	var l types.Log
-	var send []time.Time
-	var statuscode []int
+	var recv []string
 	var requests []types.RequestLog
 
 	for g := 0; g < 2; {
 		recvd := make([]byte, 4069)
 		fmt.Fprintln(payload.Conns[i], payload.Payload[i])
-		send = append(send, time.Now())
 		payload.Conns[i].Read(recvd)
-		status, _ := strconv.Atoi(string(recvd[9:12]))
-		statuscode = append(statuscode, status)
-
+		recv = append(recv, fmt.Sprintf("%v:%v", time.Now().UnixMilli(), string(recvd[9:12])))
 		g++
 	}
 
@@ -35,25 +31,24 @@ func StartSniper(timestamp int64, delay int, name string, i int, payload Payload
 	l.Delay = float64(delay)
 	l.Success = false
 
-	for g, status := range statuscode {
-		requests = append(requests, types.RequestLog{
-			Timestamp:  send[g].UnixNano(),
-			Statuscode: status,
-		})
-
-		if status == 200 {
+	for _, status := range recv {
+		if strings.Split(status, ":")[1] == "200" {
 			l.Success = true
 		}
 	}
 
+	requests = append(requests, types.RequestLog{
+		Timestamp: recv,
+		Email:     email,
+		Ip:        "Not Available Atm",
+	})
+
 	sent := types.Sent{
 		Content: requests,
-		Email:   email,
-		Ip:      "Not Available Atm",
 	}
 
 	l.Sends = append(l.Sends, &sent)
-	l.Requests = float64(len(statuscode))
+	l.Requests = float64(len(recv))
 
 	return l
 }
