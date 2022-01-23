@@ -181,3 +181,16 @@ func add_task_endpoint(p types.Packet) types.Packet {
 	res.Content.Response.Error = ""
 	return res
 }
+
+func save_logs(p types.Packet) types.Packet {
+	res := types.Packet{}
+	res.Type = "save_logs_response"
+	res.Content.Response = &types.Response{Message: "Saved accounts"}
+
+	state.Logs = append(state.Logs, p.Content.Logs...)
+
+	state.SaveState()
+	state.LoadState()
+
+	return res
+}

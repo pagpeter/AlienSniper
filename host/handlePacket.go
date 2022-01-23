@@ -4,6 +4,7 @@ import (
 	// "Alien/types"
 
 	types "Alien/types"
+	"log"
 )
 
 func HandlePacket(p types.Packet) types.Packet {
@@ -23,6 +24,11 @@ func HandlePacket(p types.Packet) types.Packet {
 		res.Type = "config_response"
 		res.Content.Config = &types.Config{}
 		res.Content.Config.LoadFromFile()
+
+	// Save snipe logs.
+	case "save_logs":
+		log.Println("Tests")
+		save_logs(p)
 
 	// Add a single account
 	case "add_account":

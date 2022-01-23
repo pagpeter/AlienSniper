@@ -14,7 +14,7 @@ type Content struct {
 	Task     *Task     `json:"task,omitempty"`
 	Account  *Account  `json:"account,omitempty"`
 	Remove   *Remove   `json:"remove,omitempty"`
-	Logs     *Log      `json:"logs,omitempty"`
+	Logs     []Log     `json:"logs,omitempty"`
 }
 
 type Packet struct {
@@ -28,12 +28,12 @@ type Response struct {
 }
 
 type Task struct {
-	Type      string     `json:"type"`
-	Name      string     `json:"name"`
-	Timestamp int64      `json:"timestamp,omitempty"`
-	Searches  string     `json:"searches,omitempty"`
-	Group     string     `json:"group,omitempty"`
-	Accounts  []*Account `json:"accounts,omitempty"`
+	Type      string          `json:"type"`
+	Name      string          `json:"name"`
+	Timestamp int64           `json:"timestamp,omitempty"`
+	Searches  string          `json:"searches,omitempty"`
+	Group     string          `json:"group,omitempty"`
+	Accounts  []StoredAccount `json:"accounts,omitempty"`
 }
 
 type Log struct {
@@ -63,6 +63,8 @@ type Account struct {
 	Group    string   `json:"group,omitempty"`
 	Status   string   `json:"status,omitempty"`
 	Security string   `json:"sq,omitempty"`
+	Bearer   string   `json:"bearer,omitempty"`
+	Usable   bool     `json:"usable,omitempty"`
 }
 
 type Remove struct {
