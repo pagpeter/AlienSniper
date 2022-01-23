@@ -55,6 +55,7 @@ func AuthThread() {
 						ts = append(ts, i)
 					}
 				}
+				
 				state.Accounts = ts
 				state.SaveState()
 

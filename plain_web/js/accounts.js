@@ -5,7 +5,6 @@ let accounts = []
 
 
 const get_account_html = (acc) => {
-    // acc = { email: '', password: '', type: '' group: '', status: '' }
     let status_color = "red";
     let usable = "No";
     if ((acc.type != "Pending...") && (acc.type)) {
@@ -83,8 +82,6 @@ const mass_add_accounts_handler = () => {
 }
 
 
-
-
 // make new connection
 let socket = new WebSocket(`ws://${IP}:${PORT}/ws`)
 
@@ -98,6 +95,7 @@ socket.onopen = event => {
 // handle incoming packets
 socket.onmessage = (event) => {
     let packet = JSON.parse(event.data);
+
     switch (packet.type) {
         case 'error':
             console.log(packet.content.error);
