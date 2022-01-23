@@ -6,6 +6,7 @@ import (
 	"time"
 )
 
+var lastAuthedGlobal time.Time
 var state types.State
 var RequestMap map[string]int
 
@@ -25,69 +26,42 @@ func Start() {
 func AuthThread() {
 	for {
 		time.Sleep(time.Second * 10)
-		for _, acc := range state.Accounts {
-			if acc.AuthInterval > 0 {
-				if time.Now().Unix() > acc.LastAuthed+acc.AuthInterval {
-					log.Println("[Auth]", acc.Email, "is due for auth")
-					// go func(tmpacc *types.StoredAccount) {
+		// check if the last auth was more than a minute ago
+		for i, acc := range state.Accounts {
+			if time.Now().Unix() > acc.LastAuthed+acc.AuthInterval {
+				log.Println("[Auth]", acc.Email, "is due for auth")
 
-					// by default, the account isnt usable
-					acc.Usable = false
-					// authenticated account
-					acc.Bearer, acc.Type = Auth(acc.Email, acc.Password, acc.Type, types.Packet{})
-					log.Println("[Auth]", acc.Email, "is usable:", acc.Usable)
+				// by default, the account isnt usable
+				acc.Usable = false
 
-					// if the account is usable, update the last authed time
-					if acc.Bearer != "" {
-						acc.LastAuthed = time.Now().Unix()
-						acc.Usable = true
-						state.SaveState()
-						continue // continue to next account
-					}
+				// authenticating account
+				acc.Bearer, acc.Type = Auth(acc.Email, acc.Password, acc.Type, types.Packet{})
+				log.Println("[Auth]", acc.Email, "is usable:", acc.Usable)
+				lastAuthedGlobal = time.Now()
 
-					// if the account isnt usable, remove it from the list
-					var ts []types.StoredAccount
-					for _, i := range state.Accounts {
-						if i.Email != acc.Email {
-							ts = append(ts, i)
-						}
-					}
-					state.Accounts = ts
+				// if the account is usable, update the last authed time
+				if acc.Bearer != "" {
+					acc.LastAuthed = time.Now().Unix()
+					acc.Usable = true
+					state.Accounts[i] = acc
 					state.SaveState()
-
-					// if tmpacc.Bearer != "" {
-					// 	tmpacc.Usable = true
-					// } else {
-					// 	var tmpaccs []types.StoredAccount
-					// 	for _, i := range state.Accounts {
-					// 		if i.Email != tmpacc.Email {
-					// 			tmpaccs = append(tmpaccs, i)
-					// 		}
-					// 		state.Accounts = tmpaccs
-					// 		state.Accounts = append(state.Accounts, *tmpacc)
-					// 		state.SaveState()
-					// 		return
-					// 	}
-					// }
-					// tmpacc.LastAuthed = time.Now().Unix()
-					// // log.Println(tmpacc, tmpacc.Bearer, tmpacc.LastAuthed)
-
-					// var tmpaccs []types.StoredAccount
-					// for _, i := range state.Accounts {
-					// 	if i.Email != tmpacc.Email {
-					// 		tmpaccs = append(tmpaccs, i)
-					// 	}
-					// }
-					// state.Accounts = tmpaccs
-					// state.Accounts = append(state.Accounts, *tmpacc)
-
-					// state.SaveState()
-					// }(&acc)
+					break // break the loop to update the state.Accounts info.
 				}
+
+				// if the account isnt usable, remove it from the list
+				var ts []types.StoredAccount
+				for _, i := range state.Accounts {
+					if i.Email != acc.Email {
+						ts = append(ts, i)
+					}
+				}
+				state.Accounts = ts
+				state.SaveState()
+
+				break // break the loop to update the state.Accounts info.
 			}
 		}
 	}
-
 }
 
 // Check if any tasks are due in the next 60 secs
