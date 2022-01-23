@@ -14,6 +14,7 @@ type Content struct {
 	Task     *Task     `json:"task,omitempty"`
 	Account  *Account  `json:"account,omitempty"`
 	Remove   *Remove   `json:"remove,omitempty"`
+	Logs     *Log      `json:"logs,omitempty"`
 }
 
 type Packet struct {
@@ -33,6 +34,20 @@ type Task struct {
 	Searches  string     `json:"searches,omitempty"`
 	Group     string     `json:"group,omitempty"`
 	Accounts  []*Account `json:"accounts,omitempty"`
+}
+
+type Log struct {
+	Name     string  `json:"name"`
+	Requests float64 `json:"requests"`
+	Delay    float64 `json:"delay"`
+	Success  bool    `json:"success"`
+	Sends    []*Sent `json:"sends"`
+}
+
+type Sent struct {
+	Content string `json:"content"`
+	Email   string `json:"email"`
+	Ip      string `json:"ip"`
 }
 
 type Account struct {
