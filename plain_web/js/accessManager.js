@@ -1,28 +1,28 @@
 getToken = () => {
-    return {
-        token: localStorage.getItem('token'),
-        ip: localStorage.getItem('ip'),
-        port: localStorage.getItem('port')
-    }
-}
+  return {
+    token: localStorage.getItem("token"),
+    ip: localStorage.getItem("ip"),
+    port: localStorage.getItem("port"),
+  };
+};
 
 setToken = (token, ip, port) => {
-    localStorage.setItem('token', token)
-    localStorage.setItem('ip', ip)
-    localStorage.setItem('port', port)
-}
+  localStorage.setItem("token", token);
+  localStorage.setItem("ip", ip);
+  localStorage.setItem("port", port);
+};
 
 checkIfCanAccess = () => {
-    let token = getToken()
-    if (!token.token || !token.ip || !token.port) {
-        return false
-    } else {
-        return true
-    }
-}
+  let token = getToken();
+  if (!token.token || !token.ip || !token.port) {
+    return false;
+  } else {
+    return true;
+  }
+};
 
 makeInputPopupHTML = () => {
-    return `
+  return `
     <input type="checkbox" id="my-modal-2" class="modal-toggle">
     <div for="my-modal-2" class="modal modal-open">
         <div class="modal-box">
@@ -54,27 +54,27 @@ makeInputPopupHTML = () => {
             </div>
         </div>
     </div>
-    `
-}
+    `;
+};
 
 popupInputHandler = () => {
-    let ip = document.getElementById('ip_info').value.trim();
-    let port = document.getElementById('port_info').value.trim();
-    let token = document.getElementById('token_info').value.trim();
+  let ip = document.getElementById("ip_info").value.trim();
+  let port = document.getElementById("port_info").value.trim();
+  let token = document.getElementById("token_info").value.trim();
 
-    if (ip == '' || port == '' || token == '') {
-        popInfo('Please fill all fields.')
-        return
-    }
-    setToken(token, ip, port)
-    window.location.href = '/'
-}
+  if (ip == "" || port == "" || token == "") {
+    popInfo("Please fill all fields.");
+    return;
+  }
+  setToken(token, ip, port);
+  window.location.href = "/";
+};
 
 // main
 
-const canAccess = checkIfCanAccess()
-console.log("Has access:", canAccess)
+const canAccess = checkIfCanAccess();
+console.log("Has access:", canAccess);
 if (!canAccess) {
-    const popup = makeInputPopupHTML()
-    showPopup(popup)
+  const popup = makeInputPopupHTML();
+  showPopup(popup);
 }

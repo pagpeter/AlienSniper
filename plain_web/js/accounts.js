@@ -1,16 +1,15 @@
 const t = getToken();
-let accounts = []
-
+let accounts = [];
 
 const get_account_html = (acc) => {
-    let status_color = "red";
-    let usable = "No";
-    if ((acc.type != "Pending...") && (acc.type)) {
-        status_color = "green";
-        usable = "Yes";
-    }
+  let status_color = "red";
+  let usable = "No";
+  if (acc.type != "Pending..." && acc.type) {
+    status_color = "green";
+    usable = "Yes";
+  }
 
-    return `
+  return `
     <tr>
     <td>${acc.email}</td> 
     <td>${acc.type || "None"}</td> 
@@ -24,122 +23,124 @@ const get_account_html = (acc) => {
     </td>
   </tr>
   `;
-}
+};
 
 const add_account_html = (acc) => {
-    let html = get_account_html(acc);
-    document.getElementById("accounts_list").innerHTML += html;
-}
+  let html = get_account_html(acc);
+  document.getElementById("accounts_list").innerHTML += html;
+};
 
 const add_account_handler = () => {
-    const email = document.getElementById('account_email').value.trim();
-    const password = document.getElementById('account_password').value.trim();
-    const group = document.getElementById('account_group').value.trim();
+  const email = document.getElementById("account_email").value.trim();
+  const password = document.getElementById("account_password").value.trim();
+  const group = document.getElementById("account_group").value.trim();
 
-    const account = {
-        email: email,
-        password: password,
-        group: group || "None",
-        type: "Pending...",
-        status: "Pending...",
-    }
-    console.log(account);
-    accounts.push(account);
-    socket.send(new Packet('add_account', { account: account }).toJson());
-    add_account_html(account);
-}
+  const account = {
+    email: email,
+    password: password,
+    group: group || "None",
+    type: "Pending...",
+    status: "Pending...",
+  };
+  console.log(account);
+  accounts.push(account);
+  socket.send(new Packet("add_account", { account: account }).toJson());
+  add_account_html(account);
+};
 
 const mass_add_accounts_handler = () => {
-    const lines = document.getElementById('mass_accounts').value;
-    const group = document.getElementById('mass_accounts_group').value;
+  const lines = document.getElementById("mass_accounts").value;
+  const group = document.getElementById("mass_accounts_group").value;
 
-    const tmpAccs = lines.split('\n');
-    tmpAccs.forEach(acc => {
-        const account = {
-            email: acc.split(',')[0],
-            password: acc.split(',')[1],
-            group: group || "None",
-            type: "Pending...",
-            status: "Pending...",
-        }
-        console.log(account);
-        accounts.push(account);
-        // socket.send(new Packet('add_account', { account: account }).toJson());
-        add_account_html(account);
-    });
-    const content = {
-        account: {
-            group: group || "None",
-            type: "Pending...",
-            status: "Pending...",
-            lines: tmpAccs,
-        }
-    }
+  const tmpAccs = lines.split("\n");
+  tmpAccs.forEach((acc) => {
+    const account = {
+      email: acc.split(",")[0],
+      password: acc.split(",")[1],
+      group: group || "None",
+      type: "Pending...",
+      status: "Pending...",
+    };
+    console.log(account);
+    accounts.push(account);
+    // socket.send(new Packet('add_account', { account: account }).toJson());
+    add_account_html(account);
+  });
+  const content = {
+    account: {
+      group: group || "None",
+      type: "Pending...",
+      status: "Pending...",
+      lines: tmpAccs,
+    },
+  };
 
-    socket.send(new Packet('add_multiple_accounts', content).toJson());
-}
-
+  socket.send(new Packet("add_multiple_accounts", content).toJson());
+};
 
 // make new connection
-let socket = null
+let socket = null;
 try {
-    socket = new WebSocket(`ws://${t.ip}:${t.port}/ws`)
+  socket = new WebSocket(`ws://${t.ip}:${t.port}/ws`);
 } catch (e) {
-    console.log(e);
+  console.log(e);
 }
 
 // send auth packet on open
-socket.onopen = event => {
-    console.log('Connected to server', event);
-    socket.send(new Packet('auth', { auth: t.token }).toJson());
-    socket.send(new Packet('get_state', {}).toJson());
-}
+socket.onopen = (event) => {
+  console.log("Connected to server", event);
+  socket.send(new Packet("auth", { auth: t.token }).toJson());
+  socket.send(new Packet("get_state", {}).toJson());
+};
 
 // handle incoming packets
 socket.onmessage = (event) => {
-    let packet = JSON.parse(event.data);
+  let packet = JSON.parse(event.data);
 
-    switch (packet.type) {
-        case 'error':
-            console.log(packet.content.error);
-            break;
-        case 'auth':
-            console.log(packet.content.auth);
-            break;
-        case 'state_response':
-            // console.log(packet.content.state);
-            accounts = packet.content.state.accounts || [];
-            accounts.forEach(acc => {
-                add_account_html(acc);
-            });
-            break;
-        case 'config':
-            console.log(packet.content.config);
-            break;
-        case 'response':
-            console.log(packet.content.response);
-            break;
-        default:
-            console.log(packet);
-    }
-}
-
+  switch (packet.type) {
+    case "error":
+      console.log(packet.content.error);
+      break;
+    case "auth":
+      console.log(packet.content.auth);
+      break;
+    case "state_response":
+      // console.log(packet.content.state);
+      accounts = packet.content.state.accounts || [];
+      accounts.forEach((acc) => {
+        add_account_html(acc);
+      });
+      break;
+    case "config":
+      console.log(packet.content.config);
+      break;
+    case "response":
+      console.log(packet.content.response);
+      break;
+    default:
+      console.log(packet);
+  }
+};
 
 alrShowedError = false;
-socket.onclose = event => {
-    console.log('Disconnected from server', event);
+socket.onclose = (event) => {
+  console.log("Disconnected from server", event);
 
-    if (!alrShowedError) {
-        popInfo("There was an error while connecting to the server. Please check if its running and try again.");
-        alrShowedError = true;
-    }
-}
+  if (!alrShowedError) {
+    popInfo(
+      "There was an error while connecting to the server. Please check if its running and try again."
+    );
+    alrShowedError = true;
+  }
+};
 
-socket.onerror = event => {
-    console.log('Error connecting to server', event);
-    
-    if (!alrShowedError) {
-        popInfo("There was an error while connecting to the server. Please check if its running and try again.");
-        alrShowedError = true;
-    }
-}
+socket.onerror = (event) => {
+  console.log("Error connecting to server", event);
+
+  if (!alrShowedError) {
+    popInfo(
+      "There was an error while connecting to the server. Please check if its running and try again."
+    );
+    alrShowedError = true;
+  }
+};
