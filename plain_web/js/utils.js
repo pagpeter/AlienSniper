@@ -59,3 +59,13 @@ const popInfo = (content) => {
     const popup = makePopupHTML(content, action);
     showPopup(popup);
 }
+
+function modalOpen(id, event) {
+    let modal = document.getElementById(id);
+    modal.classList.add(event)
+}
+
+function modalClose(id, event) {
+    let modal = document.getElementById(id);
+    modal.classList.remove(event)
+}

@@ -44,10 +44,15 @@ type Log struct {
 	Sends    []*Sent `json:"sends"`
 }
 
+type RequestLog struct {
+	Timestamp  int64 `json:"timestamp"`
+	Statuscode int   `json:"statuscode"`
+}
+
 type Sent struct {
-	Content string `json:"content"`
-	Email   string `json:"email"`
-	Ip      string `json:"ip"`
+	Content []RequestLog `json:"content"`
+	Email   string       `json:"email"`
+	Ip      string       `json:"ip"`
 }
 
 type Account struct {

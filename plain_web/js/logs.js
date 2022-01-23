@@ -1,32 +1,47 @@
+const IP = "localhost"
+const PORT = "8080"
+const TOKEN = "GMWJGSAPGATLMODYLUMG"
+
 const add_logs = (acc) => {
     let content = ""
-    for (const x of acc.sends) {
-        if (String(x.content).match("200")) {
-            status_code = "green"
-            bg = "success"
-        } else {
-            status_code = "red"
-            bg = "error"
-        }
 
+    // loop through the logs
+    for (const x of acc.sends) {
+        // for each log (for each past snipe)
+
+        // assume a background of red
+        let bg = "error"
+
+        // create HTML for the requests
+        let logHTML = ""
+        x.content.forEach(l => {
+            console.log(l)
+            if (l.statuscode == 200) { bg = "success" }
+            logHTML += `
+            <p>
+                <span class="text-${(l.statuscode == 200) ? "green" : "red" }-500">[${l.statuscode}]</span>
+                <span>${l.timestamp}</span>
+            </p>
+            `
+        })
+
+        // create HTML for the log thing
         content += `<div class="bg-${bg} p-2 rounded-md shadow mt-4"><details>
             <summary>
                 <h1 class="text-md font-mono">${x.email}</h1>
                 <h2 class="text-sm font-mono">${x.ip}</h2>
             </summary>
             <div class="font-mono text-sm mt-2 p-3 bg-neutral ">
-                <p><span class="text-${status_code}-500">${String(x.content)}</span></p>
+                <p>
+                    ${logHTML}
+                </p>
             </div>
         </details></div>`
     }
 
-    if (acc.success == true) {
-        statusC = "Yes"
-        bgC = "green"
-    } else {
-        statusC = "No"
-        bgC = "red"
-    }
+
+    statusC = (acc.success) ? "Yes" : "No"
+    bgC = (acc.success) ? "green" : "red"
 
     return `<div id="${acc.name}" class="modal modal-closed">
 
@@ -35,11 +50,11 @@ const add_logs = (acc) => {
             <span class="kbd">${acc.name}</span>
         </h1>
 
-        <p class="text-2xl">Requests: ${acc.requests}</p>
-        <p class="text-2xl">Delay: ${acc.delay}</p>
-        <p class="text-2xl">Success: ${acc.success}</p>
+        <p class="text-md">${acc.requests} requests</p>
+        <p class="text-md">Delay: ${acc.delay}</p>
+        <p class="text-md">Success: ${acc.success}</p>
 
-        <div class="m-2 p-5">
+        <div class="m-2 p-5 ">
 
         ${content}  
     
@@ -60,4 +75,44 @@ const add_logs = (acc) => {
     </span>
     </td>
 </tr>`
+}
+
+
+// make new connection
+let socket = new WebSocket(`ws://${IP}:${PORT}/ws`)
+
+// send auth packet on open
+socket.onopen = event => {
+    console.log('Connected to server', event);
+    socket.send(new Packet('auth', { auth: TOKEN }).toJson());
+    socket.send(new Packet('get_state', {}).toJson());
+}
+
+// handle incoming packets
+socket.onmessage = (event) => {
+    let packet = JSON.parse(event.data);
+
+    switch (packet.type) {
+        case 'error':
+            console.log(packet.content.error);
+            break;
+        case 'auth':
+            console.log(packet.content.auth);
+            break;
+        case 'state_response':
+            accs = packet.content.state.logs
+            for (const x of accs) {
+                document.getElementById("table1").innerHTML += add_logs(x);
+            }
+            break;
+        case 'config':
+            console.log(packet.content.config);
+            break;
+        case 'add_task_response':
+            add_task_html(packet.content.task);
+            // console.log(packet.content.response);
+            break;
+        default:
+            console.log(packet);
+    }
 }
