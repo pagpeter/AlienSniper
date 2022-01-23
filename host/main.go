@@ -47,6 +47,11 @@ func AuthThread() {
 
 				// authenticating account
 				acc.Bearer, acc.Type = Auth(acc.Email, acc.Password, acc.Type, types.Packet{})
+
+				if acc.Bearer != "" {
+					acc.Usable = true
+				}
+
 				log.Println("[Auth]", acc.Email, "is usable:", acc.Usable)
 				lastAuthedGlobal = time.Now()
 
@@ -97,10 +102,13 @@ func TaskThread() {
 					log.Println("Sending to VPS")
 					p := types.Packet{}
 					p.Type = "task"
+
 					p.Content.Task = &types.Task{
 						Type:      task.Type,
 						Name:      task.Name,
 						Timestamp: task.Timestamp,
+						Group:     task.Group,
+						Accounts:  state.Accounts,
 					}
 					vps.WriteMessage(websocket.TextMessage, p.Encode())
 				}
