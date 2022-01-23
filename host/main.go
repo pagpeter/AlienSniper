@@ -4,6 +4,8 @@ import (
 	types "Alien/types"
 	"log"
 	"time"
+
+	"github.com/gorilla/websocket"
 )
 
 var lastAuthedGlobal time.Time
@@ -55,7 +57,7 @@ func AuthThread() {
 						ts = append(ts, i)
 					}
 				}
-				
+
 				state.Accounts = ts
 				state.SaveState()
 
@@ -73,24 +75,36 @@ func TaskThread() {
 			// if less than minute is left
 			if task.Timestamp-time.Now().Unix() < 60 {
 				log.Println("Task", task.Type, "is due for execution. Name:", task.Name)
-				go func(task *types.QueuedTask) {
-					// TODO
-					// get account that should be used
-					// get accounts
-					// assign each VPS a account
-					// execute task
-					// sending to all VPSs
+				// go func(task *types.QueuedTask) {
+				// TODO
 
-					// remove task from queue
-					var ts []types.QueuedTask
-					for _, i := range state.Tasks {
-						if i.Name != task.Name {
-							ts = append(ts, i)
-						}
+				// get account that should be used
+				// get accounts
+
+				// assign each VPS a account
+
+				// sending to all VPSs
+				for _, vps := range connectedNodes {
+					log.Println("Sending to VPS")
+					p := types.Packet{}
+					p.Type = "task"
+					p.Content.Task = &types.Task{
+						Type:      task.Type,
+						Name:      task.Name,
+						Timestamp: task.Timestamp,
 					}
-					state.Tasks = ts
-					state.SaveState()
-				}(&task)
+					vps.WriteMessage(websocket.TextMessage, p.Encode())
+				}
+				// remove task from queue
+				var ts []types.QueuedTask
+				for _, i := range state.Tasks {
+					if i.Name != task.Name {
+						ts = append(ts, i)
+					}
+				}
+				state.Tasks = ts
+				state.SaveState()
+				// }(&task)
 			}
 		}
 	}

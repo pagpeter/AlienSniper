@@ -15,7 +15,6 @@ var connectedNodes []*websocket.Conn
 var connectedDashboards []*websocket.Conn
 var tmp types.Packet
 
-
 func home(w http.ResponseWriter, r *http.Request) {
 	// Handle the home page
 
@@ -132,7 +131,7 @@ func ConnectionHandler(c *websocket.Conn) {
 	if p.Content.Response == nil {
 		clientType = ""
 	} else {
-		clientType = p.Content.Response.Message 
+		clientType = p.Content.Response.Message
 	}
 
 	log.Println("New client connected. Client type:", clientType, " - IP:", c.RemoteAddr().String())
@@ -155,19 +154,11 @@ func ConnectionHandler(c *websocket.Conn) {
 			break
 		}
 		go func() {
-			if err != nil {
-				log.Println("message read:", err, c.RemoteAddr().String())
-				errp := tmp.MakeError("Error reading message")
-				c.WriteMessage(websocket.TextMessage, errp.Encode())
-				RemoveConnection(c)
-				return
-			}
-			// log.Printf("recv: %s", message)
 			var p types.Packet
 			err = p.Decode(message)
 			if err != nil {
-				log.Println("decode:", err, c.RemoteAddr().String())
-				log.Println("message:", string(message))
+				// log.Println("decode:", err, c.RemoteAddr().String())
+				// log.Println("message:", string(message))
 				errp := tmp.MakeError("Error decoding message")
 				c.WriteMessage(websocket.TextMessage, errp.Encode())
 				RemoveConnection(c)

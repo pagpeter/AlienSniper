@@ -16,4 +16,3 @@ func Start() {
 	c := MakeConnection(addr)
 	ListenToEvents(c)
 }
-
