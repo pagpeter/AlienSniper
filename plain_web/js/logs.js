@@ -88,7 +88,9 @@ try {
 // send auth packet on open
 socket.onopen = (event) => {
   console.log("Connected to server", event);
-  socket.send(new Packet("auth", { auth: t.token }).toJson());
+  socket.send(
+    new Packet("auth", { auth: t.token, response: { message: "web" } }).toJson()
+  );
   socket.send(new Packet("get_state", {}).toJson());
 };
 

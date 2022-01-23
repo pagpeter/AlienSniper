@@ -1,7 +1,8 @@
 package main
 
 import (
-	"Alien/host"
+	host "Alien/host"
+	node "Alien/node"
 	types "Alien/types"
 	"fmt"
 	"os"
@@ -129,7 +130,7 @@ func Handle() {
 				Name: "node",
 				Action: func(c *cli.Context) error {
 					fmt.Println("Starting as node...")
-					host.Start()
+					node.Start()
 					os.Exit(0)
 					return nil
 				},

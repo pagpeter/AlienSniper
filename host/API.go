@@ -11,8 +11,10 @@ import (
 )
 
 var upgrader = websocket.Upgrader{}
-var connections []*websocket.Conn
+var connectedNodes []*websocket.Conn
+var connectedDashboards []*websocket.Conn
 var tmp types.Packet
+
 
 func home(w http.ResponseWriter, r *http.Request) {
 	// Handle the home page
@@ -52,12 +54,34 @@ func StartAPI(addr string) {
 
 	http.HandleFunc("/ws", wsHandler)
 	http.HandleFunc("/", home)
+	log.Println("Listening on", addr)
 	log.Fatal(http.ListenAndServe(addr, nil))
 }
 
 func CheckInitialAuth(p types.Packet) bool {
 	// Check the auth packet
 	return p.Content.Auth == state.Config.Token
+}
+
+func RemoveConnection(c *websocket.Conn) {
+	// Remove a connection from the list of connected nodes
+	// This is called when a connection is closed
+
+	for i, v := range connectedNodes {
+		if v == c {
+			connectedNodes = append(connectedNodes[:i], connectedNodes[i+1:]...)
+			log.Println("Connected nodes:", len(connectedNodes))
+			return
+		}
+	}
+
+	for i, v := range connectedDashboards {
+		if v == c {
+			connectedDashboards = append(connectedDashboards[:i], connectedDashboards[i+1:]...)
+			log.Println("Connected dashboards:", len(connectedDashboards))
+			return
+		}
+	}
 }
 
 func ConnectionHandler(c *websocket.Conn) {
@@ -103,10 +127,30 @@ func ConnectionHandler(c *websocket.Conn) {
 		return
 	}
 
+	// this is needed or it will crash
+	var clientType string
+	if p.Content.Response == nil {
+		clientType = ""
+	} else {
+		clientType = p.Content.Response.Message 
+	}
+
+	log.Println("New client connected. Client type:", clientType, " - IP:", c.RemoteAddr().String())
+	if clientType == "node" {
+		connectedNodes = append(connectedNodes, c)
+		log.Println("Connected nodes:", len(connectedNodes))
+	} else if clientType == "web" {
+		connectedDashboards = append(connectedDashboards, c)
+		log.Println("Connected dashboards:", len(connectedDashboards))
+	} else {
+		log.Println("Unknown client type:", clientType, " - IP:", c.RemoteAddr().String())
+	}
+
 	for {
 		_, message, err := c.ReadMessage()
 		if err != nil {
 			log.Println("read:", err)
+			RemoveConnection(c)
 			c.Close()
 			break
 		}
@@ -115,6 +159,7 @@ func ConnectionHandler(c *websocket.Conn) {
 				log.Println("message read:", err, c.RemoteAddr().String())
 				errp := tmp.MakeError("Error reading message")
 				c.WriteMessage(websocket.TextMessage, errp.Encode())
+				RemoveConnection(c)
 				return
 			}
 			// log.Printf("recv: %s", message)
@@ -125,6 +170,7 @@ func ConnectionHandler(c *websocket.Conn) {
 				log.Println("message:", string(message))
 				errp := tmp.MakeError("Error decoding message")
 				c.WriteMessage(websocket.TextMessage, errp.Encode())
+				RemoveConnection(c)
 				return
 			}
 
