@@ -4,7 +4,6 @@ import (
 	// "Alien/types"
 
 	types "Alien/types"
-	"log"
 )
 
 func HandlePacket(p types.Packet) types.Packet {
@@ -27,7 +26,7 @@ func HandlePacket(p types.Packet) types.Packet {
 
 	// Save snipe logs.
 	case "save_logs":
-		log.Println("Tests")
+		res.Type = "logs_response"
 		save_logs(p)
 
 	// Add a single account

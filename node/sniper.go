@@ -14,8 +14,7 @@ var (
 	bearers MCbearers
 )
 
-func StartSniper(timestamp int64, delay int, name string, i int, payload Payload, email string) types.Log {
-	var l types.Log
+func StartSniper(i int, payload Payload, email string) ([]types.RequestLog, float64, bool) {
 	var recv []string
 	var requests []types.RequestLog
 
@@ -23,43 +22,43 @@ func StartSniper(timestamp int64, delay int, name string, i int, payload Payload
 		recvd := make([]byte, 4069)
 		fmt.Fprintln(payload.Conns[i], payload.Payload[i])
 		payload.Conns[i].Read(recvd)
-		recv = append(recv, fmt.Sprintf("%v:%v", time.Now().UnixMilli(), string(recvd[9:12])))
+		recv = append(recv, fmt.Sprintf("%v:%v", time.Now().Format("05.00000"), string(recvd[9:12])))
 		g++
 	}
 
-	l.Name = name
-	l.Delay = float64(delay)
-	l.Success = false
+	var sniped bool = false
 
 	for _, status := range recv {
 		if strings.Split(status, ":")[1] == "200" {
-			l.Success = true
+			sniped = true
 		}
 	}
 
 	requests = append(requests, types.RequestLog{
 		Timestamp: recv,
 		Email:     email,
-		Ip:        "Not Available Atm",
+		Ip:        c.RemoteAddr().String(),
 	})
 
-	sent := types.Sent{
-		Content: requests,
-	}
-
-	l.Sends = append(l.Sends, &sent)
-	l.Requests = float64(len(recv))
-
-	return l
+	return requests, float64(len(recv)), sniped
 }
 
 func StartSnipe(task types.Task) {
+
+	var l types.Log
+
+	l.Name = task.Name
+	l.Delay = pingMojang()
+
 	accounts := task.Accounts
 	droptime := task.Timestamp
 
 	// chans := make([]chan types.Logs, len(accounts))
 	var logs []types.Log
+	var requests []types.RequestLog
 	var wg sync.WaitGroup
+	var success bool = false
+	var amount float64
 
 	bearers = bearers.AddAccounts(accounts)
 
@@ -69,17 +68,33 @@ func StartSnipe(task types.Task) {
 
 	Sleep(droptime, delay)
 
-	for i, _ := range payload.AccountType {
+	for i := range payload.AccountType {
 		wg.Add(1)
 		go func(i int) {
-			tmp := StartSniper(droptime, delay, task.Name, i, payload, accounts[i].Email)
-			logs = append(logs, tmp)
-			// chans = append(chans, tmp)
+			sends, reqs, status := StartSniper(i, payload, accounts[i].Email)
+
+			amount = amount + reqs
+
+			if status {
+				success = true
+			}
+
+			requests = append(requests, sends...)
+
 			wg.Done()
 		}(i)
 	}
 
 	wg.Wait()
+
+	l.Requests = amount
+	l.Success = success
+
+	l.Sends = append(l.Sends, &types.Sent{
+		Content: requests,
+	})
+
+	logs = append(logs, l)
 
 	bearers = bearers.RemoveAccounts()
 

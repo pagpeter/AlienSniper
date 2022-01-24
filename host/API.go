@@ -153,24 +153,24 @@ func ConnectionHandler(c *websocket.Conn) {
 			c.Close()
 			break
 		}
-		go func() {
-			var p types.Packet
-			err = p.Decode(message)
-			if err != nil {
-				// log.Println("decode:", err, c.RemoteAddr().String())
-				// log.Println("message:", string(message))
-				errp := tmp.MakeError("Error decoding message")
-				c.WriteMessage(websocket.TextMessage, errp.Encode())
-				RemoveConnection(c)
-				return
-			}
 
-			res := HandlePacket(p)
-			err = c.WriteMessage(websocket.TextMessage, res.Encode())
-			if err != nil {
-				log.Println("write:", err, c.RemoteAddr().String())
-				return
-			}
-		}()
+		var p types.Packet
+		err = p.Decode(message)
+		if err != nil {
+			// log.Println("decode:", err, c.RemoteAddr().String())
+			// log.Println("message:", string(message))
+			errp := tmp.MakeError("Error decoding message")
+			c.WriteMessage(websocket.TextMessage, errp.Encode())
+			RemoveConnection(c)
+			return
+		}
+
+		res := HandlePacket(p)
+		err = c.WriteMessage(websocket.TextMessage, res.Encode())
+		if err != nil {
+			log.Println("write:", err, c.RemoteAddr().String())
+			return
+		}
+
 	}
 }

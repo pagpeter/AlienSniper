@@ -4,6 +4,7 @@ import (
 	types "Alien/types"
 	"log"
 	"net/url"
+	"strings"
 
 	"github.com/gorilla/websocket"
 )
@@ -57,6 +58,8 @@ func handleMessage(p types.Packet) types.Packet {
 		res = handleTask(p)
 	case "send_logs":
 		res = send_logs(p.Content.Logs)
+	case "error_response":
+		res = res.MakeError("Test")
 	default:
 		res = res.MakeError("Cant handle packet")
 	}
@@ -82,25 +85,29 @@ func send_logs(Logs []types.Log) types.Packet {
 func ListenToEvents() {
 	tmp := types.Packet{}
 	defer c.Close()
+
 	for {
 		_, message, err := c.ReadMessage()
 		if err != nil {
 			log.Println("read:", err)
 			break
 		}
-		var p types.Packet
-		err = p.Decode(message)
-		if err != nil {
-			// log.Println("decode:", err, c.RemoteAddr().String())
-			// log.Println("message:", string(message))
-			errp := tmp.MakeError("Error decoding message")
-			c.WriteMessage(websocket.TextMessage, errp.Encode())
-			continue
+
+		if string(message) != "" {
+			if !strings.Contains(string(message), "error_response") {
+				var p types.Packet
+				err = p.Decode(message)
+				if err != nil {
+					errp := tmp.MakeError("Error decoding message")
+					c.WriteMessage(websocket.TextMessage, errp.Encode())
+					continue
+				}
+
+				m := handleMessage(p)
+				c.WriteMessage(websocket.TextMessage, m.Encode())
+
+				log.Printf("recv: %s", message)
+			}
 		}
-
-		m := handleMessage(p)
-		c.WriteMessage(websocket.TextMessage, m.Encode())
-
-		log.Printf("recv: %s", message)
 	}
 }
