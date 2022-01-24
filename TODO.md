@@ -1,11 +1,11 @@
  # Stuff we need to do
- - [ ] Communication with the nodes 
- - [ ] Sniper to be functional
- - [ ] Popup for IP and token
- - [ ] UI fixes like closing popups etc
- - [ ] Removing accounts and tasks from the web ui
- - [ ] Displaying logs dynamically
+ - [x] Communication with the nodes 
+ - [x] Sniper to be functional
+ - [x] Popup for IP and token
+ - [x] UI fixes like closing popups etc
+ - [x] Displaying logs dynamically
  - [ ] Sending data from sniper to host whilst updating the config files to display updated info on-site.
  - [ ] Maybe? a function to actively remove html code from the site instead of refreshing.
  - [ ] Syncing settings with host and nodes to the webui
  - [ ] Settings UI page
+ - [ ] Removing accounts and tasks from the web ui
