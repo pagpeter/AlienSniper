@@ -3,14 +3,14 @@ const t = getToken();
 const add_logs = (acc) => {
     var content = "";
     // loop through the logs
-    for (const x of acc.sends) {
+    for (const x of (acc.sends || [])) {
         // for each log (for each past snipe)
 
         // create HTML for the requests
         x.content.forEach((l) => {
             var logHTML = "";
             l.timestamp.forEach((k) => {
-                console.log(k)
+                // console.log(k)
                 time = String(k).split(":")[0];
                 statuscode = String(k).split(":")[1];
 
@@ -24,7 +24,7 @@ const add_logs = (acc) => {
                   <span class="${
                     statuscode == "200" ? "text-green-500" : "text-red-500"
                   }">[${statuscode}]</span>
-                  <span>${time}<br></span>`;
+                  <span>${formatTime(time)}<br></span>`;
             });
 
             content += `<div class="bg-${bg} p-2 rounded-md shadow mt-4"><details>
@@ -44,7 +44,7 @@ const add_logs = (acc) => {
 
         // create HTML for the log thing
 
-        logHTML = "";
+        // logHTML = "";
     }
 
     statusC = acc.success ? "Yes" : "No";

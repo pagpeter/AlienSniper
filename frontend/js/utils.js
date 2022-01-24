@@ -69,3 +69,22 @@ function modalClose(id, event) {
   let modal = document.getElementById(id);
   modal.classList.remove(event);
 }
+
+const formatTime = (time) => {
+  time = parseInt((time + ""));
+  if (!time) {
+    return "-";
+  }
+  let date = new Date(time*1000);
+
+  // this will break in 900 years
+  if (date.getUTCFullYear() > 3000) {
+    console.log("Date to big", time)
+    console.log(date/100)
+    date = new Date(time);
+    console.log(date)
+  }
+
+  return date.toLocaleString();
+  // return `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
+}

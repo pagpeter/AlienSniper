@@ -2,13 +2,12 @@ const t = getToken();
 let accounts = [];
 
 const get_task_html = (task) => {
-  // const formatted = moment(task.time).format('MMMM Do YYYY, h:mm:ss a');
   return `
     <tr>
     <td>${task.name}</td> 
     <td>
         <span class="font-mono">
-            ${task.timestamp || task.unix || "-"}
+            ${formatTime(task.timestamp) || task.unix || "-"}
         </span>
     </td> 
     <td>${task.searches || "-"}</td>
