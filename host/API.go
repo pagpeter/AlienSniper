@@ -48,13 +48,17 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 	go ConnectionHandler(c)
 }
 
+// https://gist.github.com/denji/12b3a568f092ab951456
 func StartAPI(addr string) {
 	// Start the API
 
 	http.HandleFunc("/ws", wsHandler)
 	http.HandleFunc("/", home)
-	log.Println("Listening on", addr)
-	log.Fatal(http.ListenAndServe(addr, nil))
+	if state.Config.TLS.Active {
+		log.Fatal(http.ListenAndServeTLS(addr, state.Config.TLS.Cert, state.Config.TLS.Key, nil))
+	} else {
+		log.Fatal(http.ListenAndServe(addr, nil))
+	}
 }
 
 func CheckInitialAuth(p types.Packet) bool {

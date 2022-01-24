@@ -122,7 +122,7 @@ socket.onmessage = (event) => {
             console.log(packet.content.config);
             break;
         case "add_task_response":
-            add_task_html(packet.content.task);
+            // add_task_html(packet.content.task);
             // console.log(packet.content.response);
             break;
         default:

@@ -15,11 +15,18 @@ type Requests struct {
 	Microsoft int `json:"microsoft"`
 }
 
+type TLS struct {
+	Active bool   `json:"active"`
+	Key    string `json:"key"`
+	Cert   string `json:"cert"`
+}
+
 type Config struct {
 	Host     string   `json:"host"`
 	Port     int      `json:"port"`
 	Requests Requests `json:"requests"`
 	Token    string   `json:"token"`
+	TLS      TLS      `json:"tls"`
 }
 
 func (c *Config) LoadFromFile() {

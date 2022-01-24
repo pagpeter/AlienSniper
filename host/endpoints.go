@@ -187,10 +187,46 @@ func save_logs(p types.Packet) types.Packet {
 	res.Type = "save_logs_response"
 	res.Content.Response = &types.Response{Message: "Saved accounts"}
 
-	state.Logs = append(state.Logs, p.Content.Logs...)
+	isAlrInDB := false
+
+	// for every log in the DB
+	for i, l := range state.Logs {
+
+		// for every new log
+		for _, nl := range p.Content.Logs {
+
+			// if the new log is already in the DB
+			if l.Name == nl.Name {
+				isAlrInDB = true
+				state.Logs[i].Sends = append(state.Logs[i].Sends)
+				state.Logs[i].Requests++
+				if nl.Success {
+					state.Logs[i].Success = true
+				}
+			}
+		}
+	}
+	// if l.Name == p.Content.Log.Name {
+	// 	isAlrInDB = true
+
+	// 	// append to the exising logs
+	// 	state.Logs[i].Sends = append(state.Log, p.Content.Log.Sends...)
+
+	// 	// if the new logs were a success, set the logs to successful
+	// 	if p.Content.Logs.Success {
+	// 		state.Logs[i].Success = true
+	// 	}
+
+	// 	// Append the len of the logs to the total sends
+	// 	state.Logs[i].Requests += len(p.Content.Log.Sends)
+	// }
+
+	if !isAlrInDB {
+		state.Logs = append(state.Logs, p.Content.Logs...)
+	}
 
 	state.SaveState()
-	state.LoadState()
+	// state.LoadState()
 
 	return res
 }

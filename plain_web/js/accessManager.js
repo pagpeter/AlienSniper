@@ -14,11 +14,7 @@ setToken = (token, ip, port) => {
 
 checkIfCanAccess = () => {
   let token = getToken();
-  if (!token.token || !token.ip || !token.port) {
-    return false;
-  } else {
-    return true;
-  }
+  return !(!token.token || !token.ip || !token.port);
 };
 
 makeInputPopupHTML = () => {

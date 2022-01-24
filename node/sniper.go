@@ -103,6 +103,7 @@ func StartSnipe(task types.Task) {
 	p.Type = "send_logs"
 	p.Content.Logs = logs
 
+	// TODO: this isnt a very good way of doing it, but it works for now ig.
 	handleMessage(p)
 
 }

@@ -29,7 +29,17 @@ func Start() {
 		state.Config.Host = "0.0.0.0"
 	}
 
+	// checking for TLS
+	prefix := "ws://"
+	if state.Config.TLS.Active {
+		if state.Config.TLS.Cert == "" || state.Config.TLS.Key == "" {
+			log.Fatalln("TLS is active but no cert or key is set.")
+		}
+		fmt.Println("TLS is active")
+		prefix = "wss://"
+	}
 	addr := fmt.Sprintf("%s:%d", state.Config.Host, state.Config.Port)
+	log.Println("Listening on", prefix+addr+"/ws")
 	StartAPI(addr)
 }
 
