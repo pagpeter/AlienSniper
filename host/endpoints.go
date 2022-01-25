@@ -198,35 +198,20 @@ func save_logs(p types.Packet) types.Packet {
 			// if the new log is already in the DB
 			if l.Name == nl.Name {
 				isAlrInDB = true
-				state.Logs[i].Sends = append(state.Logs[i].Sends)
-				state.Logs[i].Requests++
+				state.Logs[i].Sends = append(state.Logs[i].Sends, nl.Sends...)
+				state.Logs[i].Requests += nl.Requests
 				if nl.Success {
 					state.Logs[i].Success = true
 				}
 			}
 		}
 	}
-	// if l.Name == p.Content.Log.Name {
-	// 	isAlrInDB = true
-
-	// 	// append to the exising logs
-	// 	state.Logs[i].Sends = append(state.Log, p.Content.Log.Sends...)
-
-	// 	// if the new logs were a success, set the logs to successful
-	// 	if p.Content.Logs.Success {
-	// 		state.Logs[i].Success = true
-	// 	}
-
-	// 	// Append the len of the logs to the total sends
-	// 	state.Logs[i].Requests += len(p.Content.Log.Sends)
-	// }
 
 	if !isAlrInDB {
 		state.Logs = append(state.Logs, p.Content.Logs...)
 	}
 
 	state.SaveState()
-	// state.LoadState()
 
 	return res
 }

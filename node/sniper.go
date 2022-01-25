@@ -17,14 +17,23 @@ var (
 func StartSniper(i int, payload Payload, email string) ([]types.RequestLog, float64, bool) {
 	var recv []string
 	var requests []types.RequestLog
+	var wg sync.WaitGroup
 
 	for g := 0; g < 2; {
-		recvd := make([]byte, 4069)
-		fmt.Fprintln(payload.Conns[i], payload.Payload[i])
-		payload.Conns[i].Read(recvd)
-		recv = append(recv, fmt.Sprintf("%v:%v", time.Now().Format("05.00000"), string(recvd[9:12])))
+		wg.Add(1)
+		go func() {
+			recvd := make([]byte, 4069)
+			fmt.Fprintln(payload.Conns[i], payload.Payload[i])
+			payload.Conns[i].Read(recvd)
+			recv = append(recv, fmt.Sprintf("%v:%v", time.Now().Format("05.00000"), string(recvd[9:12])))
+
+			wg.Done()
+		}()
+
 		g++
 	}
+
+	wg.Wait()
 
 	var sniped bool = false
 

@@ -3,7 +3,7 @@ const t = getToken();
 const add_logs = (acc) => {
     var content = "";
     // loop through the logs
-    for (const x of (acc.sends || [])) {
+    for (const x of(acc.sends || [])) {
         // for each log (for each past snipe)
 
         // create HTML for the requests
@@ -56,10 +56,6 @@ const add_logs = (acc) => {
         <h1 class="text-2xl">Logs for
             <span class="kbd">${acc.name}</span>
         </h1>
-
-        <p class="text-md">${acc.requests} requests</p>
-        <p class="text-md">Delay: ${acc.delay}</p>
-        <p class="text-md">Success: ${acc.success}</p>
 
         <div class="m-2 p-5 ">
 
