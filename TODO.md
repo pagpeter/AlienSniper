@@ -5,6 +5,7 @@
  - [x] UI fixes like closing popups etc
  - [x] Displaying logs dynamically
  - [x] Sending data from sniper to host whilst updating the config files to display updated info on-site.
+ - [ ] Adding options to the tasks, like auto 3c, 3l, 3n sniping and the ability to dedicate what node performs this action.
  - [ ] Maybe? a function to actively remove html code from the site instead of refreshing.
  - [ ] Syncing settings with host and nodes to the webui
  - [ ] Settings UI page

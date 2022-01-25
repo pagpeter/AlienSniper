@@ -1,7 +1,15 @@
 const t = getToken();
 
+function contains(arr) {
+    for (var i = 0; i < arr.length; i++) {
+        if (String(arr[i]).split(":")[1] === "200") return true;
+    }
+    return false;
+}
+
 const add_logs = (acc) => {
     var content = "";
+
     // loop through the logs
     for (const x of(acc.sends || [])) {
         // for each log (for each past snipe)
@@ -9,16 +17,11 @@ const add_logs = (acc) => {
         // create HTML for the requests
         x.content.forEach((l) => {
             var logHTML = "";
+
             l.timestamp.forEach((k) => {
                 // console.log(k)
                 time = String(k).split(":")[0];
                 statuscode = String(k).split(":")[1];
-
-                if (statuscode == "200") {
-                    bg = "success";
-                } else {
-                    bg = "error";
-                }
 
                 logHTML += `
                   <span class="${
@@ -27,7 +30,7 @@ const add_logs = (acc) => {
                   <span>${formatTime(time)}<br></span>`;
             });
 
-            content += `<div class="bg-${bg} p-2 rounded-md shadow mt-4"><details>
+            content += `<div class="bg-${contains(l.timestamp) == true ? "success" : "error"} p-2 rounded-md shadow mt-4"><details>
             <summary>
                 <h1 class="text-md font-mono">${l.email}</h1>
                 <h2 class="text-sm font-mono">${l.ip}</h2>

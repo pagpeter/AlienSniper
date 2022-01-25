@@ -2,6 +2,7 @@ package node
 
 import (
 	types "Alien/types"
+	"fmt"
 	"log"
 	"net/url"
 
@@ -19,7 +20,8 @@ func MakeConnection(addr string) *websocket.Conn {
 	if err != nil {
 		log.Fatal("dial:", err)
 	}
-	log.Println("Connected to host. Sending auth packet")
+
+	saveLogs("Connected to host. Sending auth packet")
 
 	// send auth msg
 	authmsg := types.Packet{
@@ -37,18 +39,11 @@ func MakeConnection(addr string) *websocket.Conn {
 	return c
 }
 
-func handleTask(p types.Packet) {
-	switch p.Content.Task.Type {
-	case "snipe":
-		StartSnipe(*p.Content.Task)
-	}
-}
-
 func handleMessage(p types.Packet) {
 	switch p.Type {
 	case "task":
 
-		log.Printf("Starting task %v\n", p.Content.Task.Type)
+		saveLogs(fmt.Sprintf("Starting task %v", p.Content.Task.Type))
 
 		switch p.Content.Task.Type {
 		case "snipe":
@@ -56,7 +51,9 @@ func handleMessage(p types.Packet) {
 		}
 
 	case "send_logs":
-		log.Println("Sending logs to the host.")
+
+		saveLogs("Sending logs to the host.")
+
 		send_logs(p.Content.Logs)
 	}
 }
@@ -82,7 +79,8 @@ func ListenToEvents() {
 	for {
 		_, message, err := c.ReadMessage()
 		if err != nil {
-			log.Println("read:", err)
+			saveLogs(fmt.Sprintf("Error: %v", err))
+
 			break
 		}
 

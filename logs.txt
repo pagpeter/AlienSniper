@@ -1,0 +1,14 @@
+               _,--=--._
+             ,'    _    `.
+            -    _(_)_o   - 
+       ____'    /_  _/]    `____
+-=====::(+):::::::::::::::::(+)::=====-
+         (+).""""""""""""",(+)
+             .           ,
+               `  -=-  '
+
+
+2022-01-24 23:09:01 Connected to host. Sending auth packet
+2022-01-24 23:10:57 Starting task snipe
+2022-01-24 23:11:47 Sending logs to the host.
+2022-01-24 23:19:16 Error: read tcp 127.0.0.1:56972->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.

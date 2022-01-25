@@ -3,7 +3,10 @@ package node
 import (
 	types "Alien/types"
 	"crypto/tls"
+	"errors"
 	"fmt"
+	"log"
+	"os"
 	"strconv"
 	"time"
 )
@@ -27,6 +30,33 @@ func Sleep(dropTime int64, delay float64) {
 	dropStamp := time.Unix(dropTime, 0)
 
 	time.Sleep(time.Until(dropStamp.Add(time.Millisecond * time.Duration(0-delay)).Add(time.Duration(-float64(time.Since(time.Now()).Nanoseconds())/1000000.0) * time.Millisecond)))
+}
+
+func saveLogs(content string) {
+
+	var logFile *os.File
+
+	if _, err := os.Stat("logs.txt"); errors.Is(err, os.ErrNotExist) {
+		logFile, _ = os.Create("logs.txt")
+
+		text := "               _,--=--._\n"
+		text += "             ,'    _    `.\n"
+		text += "            -    _(_)_o   - \n"
+		text += "       ____'    /_  _/]    `____\n"
+		text += "-=====::(+):::::::::::::::::(+)::=====-\n"
+		text += `         (+).""""""""""""",(+)` + "\n"
+		text += "             .           ,\n"
+		text += "               `  -=-  '\n\n\n"
+
+		logFile.WriteString(text)
+	}
+
+	log.Printf(content + "\n")
+
+	logFile, _ = os.OpenFile("logs.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	defer logFile.Close()
+
+	logFile.WriteString(time.Now().Format("2006-01-02 15:04:05") + " " + content + "\n")
 }
 
 func PreSleep(dropTime int64) {

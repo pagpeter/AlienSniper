@@ -3,6 +3,7 @@ host_state.json
 node_state.json 
 node_modules/
 testing/
+logs.txt
 
 .DS_Store
 node_modules
