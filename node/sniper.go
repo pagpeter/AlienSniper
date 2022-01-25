@@ -25,7 +25,7 @@ func StartSniper(i int, payload Payload, email string) ([]types.RequestLog, floa
 			recvd := make([]byte, 4069)
 			fmt.Fprintln(payload.Conns[i], payload.Payload[i])
 			payload.Conns[i].Read(recvd)
-			recv = append(recv, fmt.Sprintf("%v:%v", time.Now().Format("05.00000"), string(recvd[9:12])))
+			recv = append(recv, fmt.Sprintf("%v:%v", time.Now().UnixMilli(), string(recvd[9:12])))
 
 			wg.Done()
 		}()
