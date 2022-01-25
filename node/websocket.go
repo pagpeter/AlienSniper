@@ -37,36 +37,31 @@ func MakeConnection(addr string) *websocket.Conn {
 	return c
 }
 
-func handleTask(p types.Packet) types.Packet {
-	tmp := types.Packet{}
-	res := types.Packet{}
-
+func handleTask(p types.Packet) {
 	switch p.Content.Task.Type {
 	case "snipe":
 		StartSnipe(*p.Content.Task)
-	default:
-		res = tmp.MakeError("Unknown task type")
 	}
-	return res
 }
 
-func handleMessage(p types.Packet) types.Packet {
-	res := types.Packet{}
+func handleMessage(p types.Packet) {
 	switch p.Type {
 	case "task":
-		log.Printf("Starting task %v for %v \n", p.Content.Task.Type, p.Content.Task.Name)
-		res = handleTask(p)
+
+		log.Printf("Starting task %v\n", p.Content.Task.Type)
+
+		switch p.Content.Task.Type {
+		case "snipe":
+			StartSnipe(*p.Content.Task)
+		}
+
 	case "send_logs":
 		log.Println("Sending logs to the host.")
-		res = send_logs(p.Content.Logs)
-	default:
-		res = res.MakeError("Cant handle packet")
+		send_logs(p.Content.Logs)
 	}
-
-	return res
 }
 
-func send_logs(Logs []types.Log) types.Packet {
+func send_logs(Logs []types.Log) {
 	res := types.Packet{
 		Type: "save_logs",
 		Content: types.Content{
@@ -78,8 +73,6 @@ func send_logs(Logs []types.Log) types.Packet {
 	}
 
 	c.WriteMessage(websocket.TextMessage, res.Encode())
-
-	return res
 }
 
 func ListenToEvents() {
