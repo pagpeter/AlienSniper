@@ -9,4 +9,5 @@
  - [ ] Maybe? a function to actively remove html code from the site instead of refreshing.
  - [ ] Syncing settings with host and nodes to the webui
  - [ ] Settings UI page
+ - [ ] Splitting accounts up for each vps.
  - [ ] Removing accounts and tasks from the web ui
