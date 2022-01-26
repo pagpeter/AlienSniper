@@ -274,7 +274,7 @@ func Auth(email, password, info string, p types.Packet) (string, string) {
 					resp, _ := http.DefaultClient.Do(req)
 					if resp.StatusCode == 204 {
 						bearer = *access.AccessToken
-						acctype = "mojang"
+						acctype = "microsoft"
 						use = true
 					}
 				}
@@ -288,16 +288,6 @@ func Auth(email, password, info string, p types.Packet) (string, string) {
 	if use {
 		return bearer, acctype
 	}
-	return "", ""
-	// acc := types.StoredAccount{
-	// 	Email:        email,
-	// 	Password:     password,
-	// 	Type:         acctype,
-	// 	Group:        p.Content.Account.Group,
-	// 	Usable:       use,
-	// 	Bearer:       bearer,
-	// 	LastAuthed:   time.Now().Unix(),
-	// 	AuthInterval: 86400,
-	// }
 
+	return "", ""
 }

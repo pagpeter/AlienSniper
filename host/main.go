@@ -112,7 +112,6 @@ func TaskThread() {
 				var amount int
 
 				for _, inp := range state.Accounts {
-
 					if inp.Type == "giftcard" {
 						amount = 5
 					} else {
@@ -149,34 +148,61 @@ func TaskThread() {
 					outputs = append(outputs, types.Output{Group: i, Accounts: outp})
 				}
 
-				for _, meow := range outputs {
-					switch meow.Group {
-					case "microsoft", "giftcard":
-						fmt.Println("meow")
-					default:
-						fmt.Println("owo")
-					}
-				}
-
-				log.Println("Sending to VPS(s)")
 				p := types.Packet{}
 				p.Type = "task"
 
-				for i, conn := range outputs {
+				log.Println("Sending to VPS(s)")
 
-					if connectedNodes[i] == nil {
-						break
+				for _, info := range outputs {
+					for i, data := range info.Accounts {
+						if task.Group != "" {
+							if task.Group == info.Group {
+								p.Content.Task = &types.Task{
+									Type:      task.Type,
+									Name:      task.Name,
+									Timestamp: task.Timestamp,
+									Group:     task.Group,
+									Accounts:  data,
+								}
+
+								if i != len(connectedNodes) {
+									connectedNodes[i].WriteMessage(websocket.TextMessage, p.Encode())
+								} else {
+									break
+								}
+							}
+						} else {
+							if info.Group == "giftcard" {
+								p.Content.Task = &types.Task{
+									Type:      task.Type,
+									Name:      task.Name,
+									Timestamp: task.Timestamp,
+									Group:     task.Group,
+									Accounts:  data,
+								}
+
+								if i != len(connectedNodes) {
+									connectedNodes[i].WriteMessage(websocket.TextMessage, p.Encode())
+								} else {
+									break
+								}
+							} else if info.Group == "microsoft" {
+								p.Content.Task = &types.Task{
+									Type:      task.Type,
+									Name:      task.Name,
+									Timestamp: task.Timestamp,
+									Group:     task.Group,
+									Accounts:  data,
+								}
+
+								if i != len(connectedNodes) {
+									connectedNodes[i].WriteMessage(websocket.TextMessage, p.Encode())
+								} else {
+									break
+								}
+							}
+						}
 					}
-
-					p.Content.Task = &types.Task{
-						Type:      task.Type,
-						Name:      task.Name,
-						Timestamp: task.Timestamp,
-						Group:     task.Group,
-						Accounts:  conn,
-					}
-
-					connectedNodes[i].WriteMessage(websocket.TextMessage, p.Encode())
 				}
 
 				// remove task from queue

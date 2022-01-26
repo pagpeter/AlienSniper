@@ -2,7 +2,6 @@ package host
 
 import (
 	types "Alien/types"
-	"log"
 	"strings"
 )
 
@@ -19,19 +18,8 @@ func add_account_endpoint(p types.Packet) types.Packet {
 	res := types.Packet{}
 	res.Type = "add_account_response"
 	res.Content.Response = &types.Response{}
-	if p.Content.Account == (nil) {
-		res.Type = "error"
-		res.Content.Response.Error = "No account provided"
-		return res
-	}
 
-	if p.Content.Account.Email == "" || p.Content.Account.Password == "" {
-		res.Type = "error"
-		res.Content.Response.Error = "No account provided"
-		return res
-	}
-
-	if p.Content.Account == (nil) {
+	if p.Content.Account == (nil) || p.Content.Account.Email == "" || p.Content.Account.Password == "" {
 		res.Type = "error"
 		res.Content.Response.Error = "No account provided"
 		return res
@@ -117,14 +105,14 @@ func add_task_endpoint(p types.Packet) types.Packet {
 	res.Content.Response = &types.Response{}
 	res.Content.Task = &types.Task{}
 
-	log.Println(p)
-
 	if p.Content.Task == (nil) {
+		res.Type = "error"
 		res.Content.Response.Error = "No task provided"
 		return res
 	}
 
 	if p.Content.Task.Type == "" {
+		res.Type = "error"
 		res.Content.Response.Error = "No task type provided"
 		return res
 	}
@@ -133,12 +121,14 @@ func add_task_endpoint(p types.Packet) types.Packet {
 		name := p.Content.Task.Name
 		group := p.Content.Task.Group
 		if name == "" {
+			res.Type = "error"
 			res.Content.Response.Error = "No name provided"
 			return res
 		}
 
 		for _, t := range state.Tasks {
 			if t.Name == name {
+				res.Type = "error"
 				res.Content.Response.Error = "Task with that name already exists"
 				return res
 			}
@@ -146,12 +136,14 @@ func add_task_endpoint(p types.Packet) types.Packet {
 
 		drop, err := getDroptime(name, "droptime.site")
 		if err != nil {
+			res.Type = "error"
 			res.Content.Response.Error = err.Error()
 			return res
 		}
 
 		searches, err := droptimeSiteSearches(name)
 		if err != nil {
+			res.Type = "error"
 			res.Content.Response.Error = err.Error()
 		}
 
@@ -168,13 +160,11 @@ func add_task_endpoint(p types.Packet) types.Packet {
 			Group:     group,
 			Searches:  searches,
 		}
+
 		state.Tasks = append(state.Tasks, t)
-		go func() {
-			state.SaveState()
-		}()
+		state.SaveState()
 	}
 
-	res.Content.Response.Error = ""
 	return res
 }
 

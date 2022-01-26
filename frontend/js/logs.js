@@ -13,42 +13,40 @@ const add_logs = (acc) => {
     // loop through the logs
     for (const x of(acc.sends || [])) {
         // for each log (for each past snipe)
+        if (x.content.length != 0) {
+            // create HTML for the requests
+            x.content.forEach((l) => {
+                var logHTML = "";
 
-        // create HTML for the requests
-        x.content.forEach((l) => {
-            var logHTML = "";
+                l.timestamp.forEach((k) => {
+                    // console.log(k)
+                    sent = String(k).split(":")[0];
+                    recv = String(k).split(":")[1];
+                    statuscode = String(k).split(":")[2];
 
-            l.timestamp.forEach((k) => {
-                // console.log(k)
-                sent = String(k).split(":")[0];
-                recv = String(k).split(":")[1];
-                statuscode = String(k).split(":")[2];
+                    logHTML += `
+          <span class="${
+            statuscode == "200" ? "text-green-500" : "text-red-500"
+          }">[${statuscode}]</span>
+          <span>Sent @ ${sent}</span> <span>Recv @ ${recv}<br></span>`;
+                });
 
-                logHTML += `
-                  <span class="${
-                    statuscode == "200" ? "text-green-500" : "text-red-500"
-                  }">[${statuscode}]</span>
-                  <span>Sent @ ${sent}</span> <span>Recv @ ${recv}<br></span>`;
+                content += `<div class="bg-${contains(l.timestamp) == true ? "success" : "error"} p-2 rounded-md shadow mt-4"><details>
+    <summary>
+        <h1 class="text-md font-mono">${l.email}</h1>
+        <h2 class="text-sm font-mono">${l.ip}</h2>
+    </summary>
+    <div class="font-mono text-sm mt-2 p-3 bg-neutral ">
+        <p>
+          <p>
+            ${logHTML}
+          </p>
+        </p>
+    </div>
+</details></div>`;
             });
 
-            content += `<div class="bg-${contains(l.timestamp) == true ? "success" : "error"} p-2 rounded-md shadow mt-4"><details>
-            <summary>
-                <h1 class="text-md font-mono">${l.email}</h1>
-                <h2 class="text-sm font-mono">${l.ip}</h2>
-            </summary>
-            <div class="font-mono text-sm mt-2 p-3 bg-neutral ">
-                <p>
-                  <p>
-                    ${logHTML}
-                  </p>
-                </p>
-            </div>
-        </details></div>`;
-        });
-
-        // create HTML for the log thing
-
-        // logHTML = "";
+        }
     }
 
     statusC = acc.success ? "Yes" : "No";
@@ -107,7 +105,9 @@ socket.onmessage = (event) => {
 
     switch (packet.type) {
         case "error":
-            console.log(packet.content.error);
+            popInfo(
+                packet.content.response.error
+            );
             break;
         case "auth":
             console.log(packet.content.auth);
@@ -120,10 +120,6 @@ socket.onmessage = (event) => {
             break;
         case "config":
             console.log(packet.content.config);
-            break;
-        case "add_task_response":
-            // add_task_html(packet.content.task);
-            // console.log(packet.content.response);
             break;
         default:
             console.log(packet);

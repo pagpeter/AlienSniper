@@ -103,3 +103,174 @@
 2022-01-25 21:13:47 Sending logs to the host.
 2022-01-25 22:48:22 Error: read tcp 127.0.0.1:53519->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.
 2022-01-25 22:48:22 Error: read tcp 127.0.0.1:53521->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.
+2022-01-26 00:22:56 Connected to host. Sending auth packet
+2022-01-26 00:25:13 Starting task snipe
+2022-01-26 00:25:25 Sending logs to the host.
+2022-01-26 00:27:52 Error: read tcp 127.0.0.1:59416->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.
+2022-01-26 00:27:56 Connected to host. Sending auth packet
+2022-01-26 00:31:03 Starting task snipe
+2022-01-26 00:32:00 Sending logs to the host.
+2022-01-26 00:39:57 Error: read tcp 127.0.0.1:59519->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.
+2022-01-26 00:40:01 Connected to host. Sending auth packet
+2022-01-26 00:42:48 Starting task snipe
+2022-01-26 00:43:45 Sending logs to the host.
+2022-01-26 00:53:06 Error: read tcp 127.0.0.1:58188->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.
+2022-01-26 00:53:12 Connected to host. Sending auth packet
+2022-01-26 00:55:08 Starting task snipe
+2022-01-26 00:55:59 Sending logs to the host.
+2022-01-26 00:56:41 Error: read tcp 127.0.0.1:64741->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.
+2022-01-26 00:56:49 Connected to host. Sending auth packet
+2022-01-26 00:57:44 Connected to host. Sending auth packet
+2022-01-26 00:57:45 Error: read tcp 127.0.0.1:64829->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.
+2022-01-26 00:57:49 Connected to host. Sending auth packet
+2022-01-26 00:58:16 Starting task snipe
+2022-01-26 00:58:35 Sending logs to the host.
+2022-01-26 00:59:13 Connected to host. Sending auth packet
+2022-01-26 00:59:16 Error: read tcp 127.0.0.1:64861->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.
+2022-01-26 00:59:22 Connected to host. Sending auth packet
+2022-01-26 00:59:36 Connected to host. Sending auth packet
+2022-01-26 00:59:37 Error: read tcp 127.0.0.1:64868->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.
+2022-01-26 00:59:41 Connected to host. Sending auth packet
+2022-01-26 00:59:43 Connected to host. Sending auth packet
+2022-01-26 00:59:45 Connected to host. Sending auth packet
+2022-01-26 01:00:28 Starting task snipe
+2022-01-26 01:00:28 Error: read tcp 127.0.0.1:64875->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.
+2022-01-26 01:00:28 Error: read tcp 127.0.0.1:64872->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.
+2022-01-26 01:01:22 Sending logs to the host.
+2022-01-26 01:01:22 Error: read tcp 127.0.0.1:64870->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.
+2022-01-26 01:02:34 Connected to host. Sending auth packet
+2022-01-26 01:02:36 Connected to host. Sending auth packet
+2022-01-26 01:02:39 Connected to host. Sending auth packet
+2022-01-26 01:02:42 Starting task snipe
+2022-01-26 01:02:42 Starting task snipe
+2022-01-26 01:02:42 Starting task snipe
+2022-01-26 01:03:02 Sending logs to the host.
+2022-01-26 01:03:02 Sending logs to the host.
+2022-01-26 01:03:02 Starting task snipe
+2022-01-26 01:03:02 Starting task snipe
+2022-01-26 01:03:02 Sending logs to the host.
+2022-01-26 01:03:02 Starting task snipe
+2022-01-26 01:03:14 Sending logs to the host.
+2022-01-26 01:03:14 Starting task snipe
+2022-01-26 01:03:14 Sending logs to the host.
+2022-01-26 01:03:14 Starting task snipe
+2022-01-26 01:03:14 Sending logs to the host.
+2022-01-26 01:03:14 Starting task snipe
+2022-01-26 01:03:26 Sending logs to the host.
+2022-01-26 01:03:26 Sending logs to the host.
+2022-01-26 01:03:27 Sending logs to the host.
+2022-01-26 01:03:52 Starting task snipe
+2022-01-26 01:03:52 Starting task snipe
+2022-01-26 01:03:52 Starting task snipe
+2022-01-26 01:04:45 Sending logs to the host.
+2022-01-26 01:04:45 Sending logs to the host.
+2022-01-26 01:04:45 Starting task snipe
+2022-01-26 01:04:45 Starting task snipe
+2022-01-26 01:04:45 Sending logs to the host.
+2022-01-26 01:04:45 Starting task snipe
+2022-01-26 01:05:05 Sending logs to the host.
+2022-01-26 01:05:05 Sending logs to the host.
+2022-01-26 01:05:05 Starting task snipe
+2022-01-26 01:05:05 Starting task snipe
+2022-01-26 01:05:05 Sending logs to the host.
+2022-01-26 01:05:05 Starting task snipe
+2022-01-26 01:05:09 Sending logs to the host.
+2022-01-26 01:05:09 Sending logs to the host.
+2022-01-26 01:05:10 Sending logs to the host.
+2022-01-26 01:05:38 Error: read tcp 127.0.0.1:64924->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.
+2022-01-26 01:05:38 Error: read tcp 127.0.0.1:64922->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.
+2022-01-26 01:05:38 Error: read tcp 127.0.0.1:64920->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.
+2022-01-26 01:05:47 Connected to host. Sending auth packet
+2022-01-26 01:05:49 Connected to host. Sending auth packet
+2022-01-26 01:05:52 Connected to host. Sending auth packet
+2022-01-26 01:06:30 Starting task snipe
+2022-01-26 01:06:30 Starting task snipe
+2022-01-26 01:06:30 Starting task snipe
+2022-01-26 01:07:15 Sending logs to the host.
+2022-01-26 01:07:15 Sending logs to the host.
+2022-01-26 01:07:15 Sending logs to the host.
+2022-01-26 01:07:59 Error: read tcp 127.0.0.1:65008->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.
+2022-01-26 01:07:59 Error: read tcp 127.0.0.1:65010->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.
+2022-01-26 01:07:59 Error: read tcp 127.0.0.1:65005->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.
+2022-01-26 01:08:03 Connected to host. Sending auth packet
+2022-01-26 01:08:05 Connected to host. Sending auth packet
+2022-01-26 01:08:07 Connected to host. Sending auth packet
+2022-01-26 01:08:40 Starting task snipe
+2022-01-26 01:08:40 Starting task snipe
+2022-01-26 01:08:40 Error: read tcp 127.0.0.1:65054->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.
+2022-01-26 01:08:46 Sending logs to the host.
+2022-01-26 01:08:46 Error: read tcp 127.0.0.1:65052->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.
+2022-01-26 01:08:46 Sending logs to the host.
+2022-01-26 01:08:46 Error: read tcp 127.0.0.1:65050->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.
+2022-01-26 01:12:51 Connected to host. Sending auth packet
+2022-01-26 01:12:54 Connected to host. Sending auth packet
+2022-01-26 01:13:23 Connected to host. Sending auth packet
+2022-01-26 01:13:50 Starting task snipe
+2022-01-26 01:13:50 Starting task snipe
+2022-01-26 01:13:50 Starting task snipe
+2022-01-26 01:14:32 Sending logs to the host.
+2022-01-26 01:14:32 Starting task snipe
+2022-01-26 01:14:33 Sending logs to the host.
+2022-01-26 01:14:33 Starting task snipe
+2022-01-26 01:14:33 Sending logs to the host.
+2022-01-26 01:14:33 Starting task snipe
+2022-01-26 01:14:37 Sending logs to the host.
+2022-01-26 01:14:37 Starting task snipe
+2022-01-26 01:14:37 Sending logs to the host.
+2022-01-26 01:14:37 Sending logs to the host.
+2022-01-26 01:14:37 Starting task snipe
+2022-01-26 01:14:37 Starting task snipe
+2022-01-26 01:14:44 Sending logs to the host.
+2022-01-26 01:14:44 Sending logs to the host.
+2022-01-26 01:14:44 Sending logs to the host.
+2022-01-26 01:15:02 Error: read tcp 127.0.0.1:54465->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.
+2022-01-26 01:15:02 Error: read tcp 127.0.0.1:54462->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.
+2022-01-26 01:15:02 Error: read tcp 127.0.0.1:54489->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.
+2022-01-26 01:16:28 Connected to host. Sending auth packet
+2022-01-26 01:16:34 Connected to host. Sending auth packet
+2022-01-26 01:16:36 Connected to host. Sending auth packet
+2022-01-26 01:16:53 Starting task snipe
+2022-01-26 01:16:53 Starting task snipe
+2022-01-26 01:17:35 Sending logs to the host.
+2022-01-26 01:17:35 Sending logs to the host.
+2022-01-26 01:17:35 Starting task snipe
+2022-01-26 01:17:40 Sending logs to the host.
+2022-01-26 01:19:31 Error: read tcp 127.0.0.1:54552->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.
+2022-01-26 01:19:31 Error: read tcp 127.0.0.1:54554->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.
+2022-01-26 01:19:31 Error: read tcp 127.0.0.1:54556->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.
+2022-01-26 01:27:51 Connected to host. Sending auth packet
+2022-01-26 01:27:53 Connected to host. Sending auth packet
+2022-01-26 01:27:56 Connected to host. Sending auth packet
+2022-01-26 01:33:37 Error: read tcp 127.0.0.1:54677->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.
+2022-01-26 01:33:37 Error: read tcp 127.0.0.1:54673->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.
+2022-01-26 01:33:37 Error: read tcp 127.0.0.1:54675->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.
+2022-01-26 01:33:41 Connected to host. Sending auth packet
+2022-01-26 01:33:44 Connected to host. Sending auth packet
+2022-01-26 01:33:46 Connected to host. Sending auth packet
+2022-01-26 01:35:29 Starting task snipe
+2022-01-26 01:35:29 Error: read tcp 127.0.0.1:53633->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.
+2022-01-26 01:35:29 Error: read tcp 127.0.0.1:53638->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.
+2022-01-26 01:36:20 Sending logs to the host.
+2022-01-26 01:36:20 Error: read tcp 127.0.0.1:53636->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.
+2022-01-26 01:37:57 Connected to host. Sending auth packet
+2022-01-26 01:37:59 Connected to host. Sending auth packet
+2022-01-26 01:38:03 Connected to host. Sending auth packet
+2022-01-26 01:38:04 Starting task snipe
+2022-01-26 01:38:14 Sending logs to the host.
+2022-01-26 01:38:14 Starting task snipe
+2022-01-26 01:38:19 Sending logs to the host.
+2022-01-26 01:38:34 Starting task snipe
+2022-01-26 01:39:27 Sending logs to the host.
+2022-01-26 01:39:27 Starting task snipe
+2022-01-26 01:39:36 Sending logs to the host.
+2022-01-26 01:39:51 Error: read tcp 127.0.0.1:53693->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.
+2022-01-26 01:39:51 Error: read tcp 127.0.0.1:53697->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.
+2022-01-26 01:42:27 Connected to host. Sending auth packet
+2022-01-26 01:42:29 Connected to host. Sending auth packet
+2022-01-26 01:42:32 Connected to host. Sending auth packet
+2022-01-26 01:42:54 Starting task snipe
+2022-01-26 01:42:54 Starting task snipe
+2022-01-26 01:43:17 Sending logs to the host.
+2022-01-26 01:43:17 Sending logs to the host.
+2022-01-26 01:50:44 Error: read tcp 127.0.0.1:53766->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.
+2022-01-26 01:50:44 Error: read tcp 127.0.0.1:53762->127.0.0.1:21615: wsarecv: An existing connection was forcibly closed by the remote host.

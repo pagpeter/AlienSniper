@@ -72,7 +72,7 @@ func StartSnipe(task types.Task) {
 
 	payload := bearers.CreatePayloads(task.Name)
 
-	Sleep(droptime, delay)
+	Sleep(droptime, l.Delay)
 
 	for i := range payload.AccountType {
 		wg.Add(1)
