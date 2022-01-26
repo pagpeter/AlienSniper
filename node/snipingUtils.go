@@ -20,6 +20,7 @@ type Payload struct {
 type MCbearers struct {
 	Bearers     []string
 	AccountType []string
+	Emails      []string
 }
 
 // taken from https://github.com/Liza-Developer/apiGO/blob/main/mcsn.go
@@ -73,18 +74,14 @@ func PreSleep(dropTime int64) {
 func pingMojang() float64 {
 	var pingTimes float64
 	conn, _ := tls.Dial("tcp", "api.minecraftservices.com:443", nil)
-
+	defer conn.Close()
 	for i := 0; i < 10; i++ {
-		junk := make([]byte, 4096)
+		recv := make([]byte, 4096)
 		time1 := time.Now()
 		conn.Write([]byte("PUT /minecraft/profile/name/test HTTP/1.1\r\nHost: api.minecraftservices.com\r\nAuthorization: Bearer TestToken\r\n\r\n"))
-		conn.Read(junk)
-		time2 := time.Since(time1)
-		pingTimes += float64(time2.Milliseconds())
+		conn.Read(recv)
+		pingTimes += float64(time.Since(time1).Milliseconds())
 	}
-
-	conn.Close()
-
 	return float64(pingTimes/10000) * 5000
 }
 
@@ -108,10 +105,13 @@ func pingMojang() float64 {
 // 	return avgMillis, nil
 // }
 
-func (bearers MCbearers) AddAccounts(accounts []types.StoredAccount) MCbearers {
-	for _, acc := range accounts {
-		bearers.Bearers = append(bearers.Bearers, acc.Bearer)
-		bearers.AccountType = append(bearers.AccountType, acc.Type)
+func (bearers MCbearers) AddAccounts(accounts types.Output) MCbearers {
+	for _, details := range accounts.Accounts {
+		for _, details := range details {
+			bearers.Bearers = append(bearers.Bearers, details.Bearer)
+			bearers.AccountType = append(bearers.AccountType, details.Type)
+			bearers.Emails = append(bearers.Emails, details.Email)
+		}
 	}
 
 	return bearers
@@ -128,7 +128,7 @@ func (accountBearer MCbearers) CreatePayloads(name string) Payload {
 	var conns []*tls.Conn
 
 	for i, bearer := range accountBearer.Bearers {
-		if accountBearer.AccountType[i] == "Giftcard" {
+		if accountBearer.AccountType[i] == "giftcard" {
 			payload = append(payload, fmt.Sprintf("POST /minecraft/profile HTTP/1.1\r\nHost: api.minecraftservices.com\r\nConnection: open\r\nContent-Length:%s\r\nContent-Type: application/json\r\nAccept: application/json\r\nAuthorization: Bearer %s\r\n\r\n"+string([]byte(`{"profileName":"`+name+`"}`))+"\r\n", strconv.Itoa(len(string([]byte(`{"profileName":"`+name+`"}`)))), bearer))
 		} else {
 			payload = append(payload, "PUT /minecraft/profile/name/"+name+" HTTP/1.1\r\nHost: api.minecraftservices.com\r\nUser-Agent: MCSN/1.0\r\nAuthorization: bearer "+bearer+"\r\n\r\n")

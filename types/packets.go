@@ -4,6 +4,11 @@ import (
 	"encoding/json"
 )
 
+type Output struct {
+	Group    string            `json:"group"`
+	Accounts [][]StoredAccount `json:"accounts"`
+}
+
 type Content struct {
 	Error string `json:"error,omitempty"`
 	Auth  string `json:"auth,omitempty"`
@@ -28,12 +33,12 @@ type Response struct {
 }
 
 type Task struct {
-	Type      string          `json:"type"`
-	Name      string          `json:"name"`
-	Timestamp int64           `json:"timestamp,omitempty"`
-	Searches  string          `json:"searches,omitempty"`
-	Group     string          `json:"group,omitempty"`
-	Accounts  []StoredAccount `json:"accounts,omitempty"`
+	Type      string `json:"type"`
+	Name      string `json:"name"`
+	Timestamp int64  `json:"timestamp,omitempty"`
+	Searches  string `json:"searches,omitempty"`
+	Group     string `json:"group,omitempty"`
+	Accounts  Output `json:"accounts,omitempty"`
 }
 
 type Log struct {

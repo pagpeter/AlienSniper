@@ -20,16 +20,19 @@ func add_account_endpoint(p types.Packet) types.Packet {
 	res.Type = "add_account_response"
 	res.Content.Response = &types.Response{}
 	if p.Content.Account == (nil) {
+		res.Type = "error"
 		res.Content.Response.Error = "No account provided"
 		return res
 	}
 
-	// if !utils.IsInMap(p.Content.Account.Type, RequestMap) {
-	// 	res.Content.Response.Error = "Invalid account type"
-	// 	return res
-	// }
+	if p.Content.Account.Email == "" || p.Content.Account.Password == "" {
+		res.Type = "error"
+		res.Content.Response.Error = "No account provided"
+		return res
+	}
 
 	if p.Content.Account == (nil) {
+		res.Type = "error"
 		res.Content.Response.Error = "No account provided"
 		return res
 	}
@@ -56,41 +59,34 @@ func add_multiple_accounts_endpoint(p types.Packet) types.Packet {
 	res.Type = "add_multi_response"
 	res.Content.Response = &types.Response{}
 
-	if p.Content.Account.Lines == (nil) {
-		res.Content.Response.Error = "No accounts provided"
+	if len(p.Content.Account.Lines) == 0 {
+		res.Type = "error"
+		res.Content.Response.Error = "Invalid Format"
 		return res
 	}
 
-	// if !utils.IsInMap(p.Content.Account.Type, RequestMap) {
-	// 	res.Content.Response.Error = "Invalid account type"
-	// 	return res
-	// }
-	c := 0
 	for _, line := range p.Content.Account.Lines {
 		data := strings.Split(line, ":")
-		if len(data) != 2 {
-			res.Content.Response.Error = "Invalid format"
+
+		if len(data) != 2 || data[0] == "" || data[1] == "" {
+			res.Type = "error"
+			res.Content.Response.Error = "Make sure your acccount(s) have a email and password"
 			return res
+		} else {
+			acc := types.StoredAccount{
+				Email:        data[0],
+				Password:     data[1],
+				Type:         p.Content.Account.Type,
+				AuthInterval: 86400,
+			}
+			state.Accounts = append(state.Accounts, acc)
 		}
-		if len(data[0]) == 0 || len(data[1]) == 0 {
-			res.Content.Response.Error = "At least 1 empty account provided"
-			continue
-		}
-
-		c++
-		acc := types.StoredAccount{
-			Email:        data[0],
-			Password:     data[1],
-			Type:         p.Content.Account.Type,
-			AuthInterval: 86400,
-		}
-		state.Accounts = append(state.Accounts, acc)
 	}
-	state.SaveState()
-	res.Content.Response.Error = ""
-	res.Content.Response.Message = string(c) + " account(s) added successfully"
-	return res
 
+	state.SaveState()
+	res.Content.Response.Message = "account(s) added successfully"
+
+	return res
 }
 
 func remove_account_endpoint(p types.Packet) types.Packet {
@@ -186,8 +182,7 @@ func save_logs(p types.Packet) types.Packet {
 	res := types.Packet{}
 	res.Type = "save_logs_response"
 	res.Content.Response = &types.Response{Message: "Saved accounts"}
-
-	isAlrInDB := false
+	var isin bool = false
 
 	// for every log in the DB
 	for i, l := range state.Logs {
@@ -197,7 +192,7 @@ func save_logs(p types.Packet) types.Packet {
 
 			// if the new log is already in the DB
 			if l.Name == nl.Name {
-				isAlrInDB = true
+				isin = true
 				state.Logs[i].Sends = append(state.Logs[i].Sends, nl.Sends...)
 				state.Logs[i].Requests += nl.Requests
 				if nl.Success {
@@ -207,7 +202,7 @@ func save_logs(p types.Packet) types.Packet {
 		}
 	}
 
-	if !isAlrInDB {
+	if !isin {
 		state.Logs = append(state.Logs, p.Content.Logs...)
 	}
 

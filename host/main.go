@@ -91,6 +91,9 @@ func AuthThread() {
 	}
 }
 
+var test int
+var check int = 0
+
 // Check if any tasks are due in the next 60 secs
 func TaskThread() {
 	for {
@@ -99,29 +102,83 @@ func TaskThread() {
 			// if less than minute is left
 			if task.Timestamp-time.Now().Unix() < 60 {
 				log.Println("Task", task.Type, "is due for execution. Name:", task.Name)
-				// go func(task *types.QueuedTask) {
 				// TODO
-
 				// get account that should be used
-				// get accounts
-
 				// assign each VPS a account
-
 				// sending to all VPSs
-				for _, vps := range connectedNodes {
-					log.Println("Sending to VPS")
-					p := types.Packet{}
-					p.Type = "task"
+
+				var outputlist = make(map[string][][]types.StoredAccount)
+				var meow int = 0
+				var amount int
+
+				for _, inp := range state.Accounts {
+
+					if inp.Type == "giftcard" {
+						amount = 5
+					} else {
+						amount = 1
+					}
+
+					if inp.Group == "" {
+						if len(outputlist[inp.Type]) == 0 {
+							outputlist[inp.Type] = append(outputlist[inp.Type], []types.StoredAccount{inp})
+						} else {
+							if len(outputlist[inp.Type][meow]) < amount {
+								outputlist[inp.Type][meow] = append(outputlist[inp.Type][meow], inp)
+							} else {
+								meow++
+								outputlist[inp.Type] = append(outputlist[inp.Type], []types.StoredAccount{inp})
+							}
+						}
+					} else {
+						if len(outputlist[inp.Group]) == 0 {
+							outputlist[inp.Group] = append(outputlist[inp.Group], []types.StoredAccount{inp})
+						} else {
+							if len(outputlist[inp.Group][meow]) < amount {
+								outputlist[inp.Group][meow] = append(outputlist[inp.Group][meow], inp)
+							} else {
+								meow++
+								outputlist[inp.Group] = append(outputlist[inp.Group], []types.StoredAccount{inp})
+							}
+						}
+					}
+				}
+
+				var outputs []types.Output
+				for i, outp := range outputlist {
+					outputs = append(outputs, types.Output{Group: i, Accounts: outp})
+				}
+
+				for _, meow := range outputs {
+					switch meow.Group {
+					case "microsoft", "giftcard":
+						fmt.Println("meow")
+					default:
+						fmt.Println("owo")
+					}
+				}
+
+				log.Println("Sending to VPS(s)")
+				p := types.Packet{}
+				p.Type = "task"
+
+				for i, conn := range outputs {
+
+					if connectedNodes[i] == nil {
+						break
+					}
 
 					p.Content.Task = &types.Task{
 						Type:      task.Type,
 						Name:      task.Name,
 						Timestamp: task.Timestamp,
 						Group:     task.Group,
-						Accounts:  state.Accounts,
+						Accounts:  conn,
 					}
-					vps.WriteMessage(websocket.TextMessage, p.Encode())
+
+					connectedNodes[i].WriteMessage(websocket.TextMessage, p.Encode())
 				}
+
 				// remove task from queue
 				var ts []types.QueuedTask
 				for _, i := range state.Tasks {
@@ -131,7 +188,6 @@ func TaskThread() {
 				}
 				state.Tasks = ts
 				state.SaveState()
-				// }(&task)
 			}
 		}
 	}

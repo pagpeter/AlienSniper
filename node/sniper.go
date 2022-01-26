@@ -3,7 +3,6 @@ package node
 import (
 	types "Alien/types"
 	"fmt"
-	"strings"
 	"sync"
 	"time"
 )
@@ -18,14 +17,20 @@ func StartSniper(i int, payload Payload, email string) ([]types.RequestLog, floa
 	var recv []string
 	var requests []types.RequestLog
 	var wg sync.WaitGroup
+	var sniped bool = false
 
 	for g := 0; g < 2; {
 		wg.Add(1)
 		go func() {
 			recvd := make([]byte, 4069)
 			fmt.Fprintln(payload.Conns[i], payload.Payload[i])
+			sent := time.Now()
 			payload.Conns[i].Read(recvd)
-			recv = append(recv, fmt.Sprintf("%v:%v", time.Now().UnixMilli(), string(recvd[9:12])))
+			recv = append(recv, fmt.Sprintf("%v:%v:%v", sent.Format("05.0000"), time.Now().Format("05.0000"), string(recvd[9:12])))
+
+			if string(recvd[9:12]) == "200" {
+				sniped = true
+			}
 
 			wg.Done()
 		}()
@@ -34,14 +39,6 @@ func StartSniper(i int, payload Payload, email string) ([]types.RequestLog, floa
 	}
 
 	wg.Wait()
-
-	var sniped bool = false
-
-	for _, status := range recv {
-		if strings.Split(status, ":")[1] == "200" {
-			sniped = true
-		}
-	}
 
 	requests = append(requests, types.RequestLog{
 		Timestamp: recv,
@@ -80,7 +77,7 @@ func StartSnipe(task types.Task) {
 	for i := range payload.AccountType {
 		wg.Add(1)
 		go func(i int) {
-			sends, reqs, status := StartSniper(i, payload, accounts[i].Email)
+			sends, reqs, status := StartSniper(i, payload, bearers.Emails[i])
 
 			amount = amount + reqs
 

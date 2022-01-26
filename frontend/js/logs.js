@@ -20,14 +20,15 @@ const add_logs = (acc) => {
 
             l.timestamp.forEach((k) => {
                 // console.log(k)
-                time = String(k).split(":")[0];
-                statuscode = String(k).split(":")[1];
+                sent = String(k).split(":")[0];
+                recv = String(k).split(":")[1];
+                statuscode = String(k).split(":")[2];
 
                 logHTML += `
                   <span class="${
                     statuscode == "200" ? "text-green-500" : "text-red-500"
                   }">[${statuscode}]</span>
-                  <span>${formatTime(time)}<br></span>`;
+                  <span>Sent @ ${sent}</span> <span>Recv @ ${recv}<br></span>`;
             });
 
             content += `<div class="bg-${contains(l.timestamp) == true ? "success" : "error"} p-2 rounded-md shadow mt-4"><details>

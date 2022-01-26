@@ -45,9 +45,6 @@ const makePopupHTML = (content, action) => {
 const closePopup = (id) => {
     const popup = document.getElementById(id);
     popup.classList.remove("modal-open");
-    // setTimeout(() => {
-    //     popup.remove();
-    // }, 500);
 };
 
 const showPopup = (html) => {
