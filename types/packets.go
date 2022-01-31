@@ -9,17 +9,27 @@ type Output struct {
 	Accounts [][]StoredAccount `json:"accounts"`
 }
 
+type Sessions struct {
+	Ip       string `json:"ip"`
+	Port     string `json:"port"`
+	Password string `json:"password"`
+	Group    string `json:"group"`
+	Host     string `json:"host"`
+	Online   string `json:"status"`
+}
+
 type Content struct {
 	Error string `json:"error,omitempty"`
 	Auth  string `json:"auth,omitempty"`
 
-	State    *State    `json:"state,omitempty"`
-	Config   *Config   `json:"config,omitempty"`
-	Response *Response `json:"response,omitempty"`
-	Task     *Task     `json:"task,omitempty"`
-	Account  *Account  `json:"account,omitempty"`
-	Remove   *Remove   `json:"remove,omitempty"`
-	Logs     []Log     `json:"logs,omitempty"`
+	State    *State     `json:"state,omitempty"`
+	Config   *Config    `json:"config,omitempty"`
+	Response *Response  `json:"response,omitempty"`
+	Task     *Task      `json:"task,omitempty"`
+	Account  *Account   `json:"account,omitempty"`
+	Remove   *Remove    `json:"remove,omitempty"`
+	Logs     []Log      `json:"logs,omitempty"`
+	Vps      []Sessions `json:"sessions,omitempty"`
 }
 
 type Packet struct {

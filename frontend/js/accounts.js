@@ -30,6 +30,35 @@ const add_account_html = (acc) => {
     document.getElementById("accounts_list").innerHTML += html;
 };
 
+const get_account_html = (acc) => {
+    let status_color = "red";
+    let usable = "Offline";
+    if (acc.type != "Pending..." && acc.type) {
+        status_color = "green";
+        usable = "Online";
+    }
+
+    return `
+    <tr>
+    <td>${acc.email}</td> 
+    <td>${acc.type || "None"}</td> 
+    <td>
+        <span class="text-${status_color}-500">
+            ${usable}
+        </span>
+    </td>
+    <td>
+        ${acc.group || "None"}
+    </td>
+  </tr>
+  `;
+};
+
+const add_account_html = (acc) => {
+    let html = get_account_html(acc);
+    document.getElementById("accounts_list").innerHTML += html;
+};
+
 const add_account_handler = () => {
     const email = document.getElementById("account_email").value.trim();
     const password = document.getElementById("account_password").value.trim();
@@ -52,6 +81,26 @@ const add_account_handler = () => {
 
     socket.send(new Packet("add_account", account).toJson());
 };
+
+const send_session = () => {
+
+    const IP = document.getElementById("vps_ip").value.trim();
+    const Password = document.getElementById("vps_password").value.trim();
+    const Host = document.getElementById("vps_user").value.trim();
+    const Type = document.getElementById("vps_group").value.trim();
+
+    const content = {
+        sessions: [{
+            ip: IP,
+            port: "22",
+            password: Password,
+            type: Type,
+            host: Host,
+        }]
+    };
+
+    socket.send(new Packet("add_session", content).toJson());
+}
 
 const mass_add_accounts_handler = () => {
     const lines = document.getElementById("mass_accounts").value;

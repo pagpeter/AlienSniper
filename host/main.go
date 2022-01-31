@@ -91,129 +91,129 @@ func AuthThread() {
 	}
 }
 
-var test int
-var check int = 0
-
 // Check if any tasks are due in the next 60 secs
 func TaskThread() {
 	for {
 		time.Sleep(time.Second * 10)
 		for _, task := range state.Tasks {
-			// if less than minute is left
-			if task.Timestamp-time.Now().Unix() < 60 {
-				log.Println("Task", task.Type, "is due for execution. Name:", task.Name)
-				// TODO
-				// get account that should be used
-				// assign each VPS a account
-				// sending to all VPSs
+			if len(connectedNodes) != 0 {
+				// if less than minute is left
+				if task.Timestamp-time.Now().Unix() < 60 {
+					log.Println("Task", task.Type, "is due for execution. Name:", task.Name)
+					// TODO
+					// get account that should be used
+					// assign each VPS a account
+					// sending to all VPSs
 
-				var outputlist = make(map[string][][]types.StoredAccount)
-				var meow int = 0
-				var amount int
+					var outputlist = make(map[string][][]types.StoredAccount)
+					var giftcard int
+					var microsoft int
 
-				for _, inp := range state.Accounts {
-					if inp.Type == "giftcard" {
-						amount = 5
-					} else {
-						amount = 1
-					}
-
-					if inp.Group == "" {
-						if len(outputlist[inp.Type]) == 0 {
-							outputlist[inp.Type] = append(outputlist[inp.Type], []types.StoredAccount{inp})
+					for _, inp := range state.Accounts {
+						var group string
+						if inp.Group != "" {
+							group = inp.Group
 						} else {
-							if len(outputlist[inp.Type][meow]) < amount {
-								outputlist[inp.Type][meow] = append(outputlist[inp.Type][meow], inp)
-							} else {
-								meow++
-								outputlist[inp.Type] = append(outputlist[inp.Type], []types.StoredAccount{inp})
+							if inp.Type != "" {
+								group = inp.Type
 							}
 						}
-					} else {
-						if len(outputlist[inp.Group]) == 0 {
-							outputlist[inp.Group] = append(outputlist[inp.Group], []types.StoredAccount{inp})
+
+						if len(outputlist[group]) == 0 {
+							outputlist[group] = append(outputlist[group], []types.StoredAccount{inp})
 						} else {
-							if len(outputlist[inp.Group][meow]) < amount {
-								outputlist[inp.Group][meow] = append(outputlist[inp.Group][meow], inp)
-							} else {
-								meow++
-								outputlist[inp.Group] = append(outputlist[inp.Group], []types.StoredAccount{inp})
-							}
-						}
-					}
-				}
-
-				var outputs []types.Output
-				for i, outp := range outputlist {
-					outputs = append(outputs, types.Output{Group: i, Accounts: outp})
-				}
-
-				p := types.Packet{}
-				p.Type = "task"
-
-				log.Println("Sending to VPS(s)")
-
-				for _, info := range outputs {
-					for i, data := range info.Accounts {
-						if task.Group != "" {
-							if task.Group == info.Group {
-								p.Content.Task = &types.Task{
-									Type:      task.Type,
-									Name:      task.Name,
-									Timestamp: task.Timestamp,
-									Group:     task.Group,
-									Accounts:  data,
-								}
-
-								if i != len(connectedNodes) {
-									connectedNodes[i].WriteMessage(websocket.TextMessage, p.Encode())
+							if inp.Type == "giftcard" {
+								if len(outputlist[group][giftcard]) == 5 {
+									giftcard++
+									outputlist[group] = append(outputlist[group], []types.StoredAccount{inp})
 								} else {
-									break
+									outputlist[group][giftcard] = append(outputlist[group][giftcard], inp)
 								}
-							}
-						} else {
-							if info.Group == "giftcard" {
-								p.Content.Task = &types.Task{
-									Type:      task.Type,
-									Name:      task.Name,
-									Timestamp: task.Timestamp,
-									Group:     task.Group,
-									Accounts:  data,
-								}
-
-								if i != len(connectedNodes) {
-									connectedNodes[i].WriteMessage(websocket.TextMessage, p.Encode())
+							} else if inp.Type == "microsoft" {
+								if len(outputlist[group][microsoft]) == 1 {
+									microsoft++
+									outputlist[group] = append(outputlist[group], []types.StoredAccount{inp})
 								} else {
-									break
-								}
-							} else if info.Group == "microsoft" {
-								p.Content.Task = &types.Task{
-									Type:      task.Type,
-									Name:      task.Name,
-									Timestamp: task.Timestamp,
-									Group:     task.Group,
-									Accounts:  data,
-								}
-
-								if i != len(connectedNodes) {
-									connectedNodes[i].WriteMessage(websocket.TextMessage, p.Encode())
-								} else {
-									break
+									outputlist[group][microsoft] = append(outputlist[group][microsoft], inp)
 								}
 							}
 						}
 					}
-				}
 
-				// remove task from queue
-				var ts []types.QueuedTask
-				for _, i := range state.Tasks {
-					if i.Name != task.Name {
-						ts = append(ts, i)
+					var outputs []types.Output
+					for i, outp := range outputlist {
+						outputs = append(outputs, types.Output{Group: i, Accounts: outp})
 					}
+
+					p := types.Packet{}
+					p.Type = "task"
+
+					log.Println("Sending to VPS(s)")
+
+					var cancel bool = false
+					for _, info := range outputs {
+						if !cancel {
+							for i, data := range info.Accounts {
+								if task.Group != "" {
+									if task.Group == info.Group {
+										p.Content.Task = &types.Task{
+											Type:      task.Type,
+											Name:      task.Name,
+											Timestamp: task.Timestamp,
+											Group:     task.Group,
+											Accounts:  data,
+										}
+
+										if i != len(connectedNodes) {
+											connectedNodes[i].WriteMessage(websocket.TextMessage, p.Encode())
+										} else {
+											cancel = true
+										}
+									}
+								} else {
+									if info.Group == "giftcard" {
+										p.Content.Task = &types.Task{
+											Type:      task.Type,
+											Name:      task.Name,
+											Timestamp: task.Timestamp,
+											Group:     task.Group,
+											Accounts:  data,
+										}
+										if i != len(connectedNodes) {
+											connectedNodes[i].WriteMessage(websocket.TextMessage, p.Encode())
+										} else {
+											cancel = true
+										}
+									} else if info.Group == "microsoft" {
+										p.Content.Task = &types.Task{
+											Type:      task.Type,
+											Name:      task.Name,
+											Timestamp: task.Timestamp,
+											Group:     task.Group,
+											Accounts:  data,
+										}
+
+										if i != len(connectedNodes) {
+											connectedNodes[i].WriteMessage(websocket.TextMessage, p.Encode())
+										} else {
+											cancel = true
+										}
+									}
+								}
+							}
+						}
+					}
+
+					// remove task from queue
+					var ts []types.QueuedTask
+					for _, i := range state.Tasks {
+						if i.Name != task.Name {
+							ts = append(ts, i)
+						}
+					}
+					state.Tasks = ts
+					state.SaveState()
 				}
-				state.Tasks = ts
-				state.SaveState()
 			}
 		}
 	}

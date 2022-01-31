@@ -50,6 +50,9 @@ func HandlePacket(p types.Packet) types.Packet {
 	case "add_task":
 		return add_task_endpoint(p)
 
+	case "add_session":
+		return add_session(p)
+
 	case "get_tasks":
 		res.Type = "tasks_response"
 		res.Content.Response = &types.Response{}

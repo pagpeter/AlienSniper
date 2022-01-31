@@ -24,14 +24,13 @@ type Searches struct {
 
 func droptimeSiteSearches(username string) (string, error) {
 	resp, err := http.Get(fmt.Sprintf("https://droptime.site/api/v2/searches/%v", username))
-
 	if err != nil {
 		return "", err
 	}
+
 	defer resp.Body.Close()
 
 	respBytes, err := ioutil.ReadAll(resp.Body)
-
 	if err != nil {
 		return "", err
 	}

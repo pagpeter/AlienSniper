@@ -2,7 +2,7 @@ const t = getToken();
 
 function contains(arr) {
     for (var i = 0; i < arr.length; i++) {
-        if (String(arr[i]).split(":")[1] === "200") return true;
+        if (String(arr[i]).split(":")[2] === "200") return true;
     }
     return false;
 }

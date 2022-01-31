@@ -43,11 +43,6 @@ type accessTokenResp struct {
 }
 
 var (
-	// RequestMap map[string]int = map[string]int{
-	// 	"mojang":    state.Config.Requests.Mojang,
-	// 	"giftcard":  state.Config.Requests.Giftcard,
-	// 	"microsoft": state.Config.Requests.Microsoft,
-	// }
 	redirect string
 	i        int
 	g        int

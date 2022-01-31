@@ -2,7 +2,13 @@ package host
 
 import (
 	types "Alien/types"
+	"bytes"
+	"log"
+	"os"
 	"strings"
+
+	"github.com/pkg/sftp"
+	"golang.org/x/crypto/ssh"
 )
 
 // all endpoints for the websocket connection
@@ -168,6 +174,28 @@ func add_task_endpoint(p types.Packet) types.Packet {
 	return res
 }
 
+func add_session(p types.Packet) types.Packet {
+	res := types.Packet{}
+	res.Type = "add_session_response"
+	res.Content.Response = &types.Response{}
+
+	for _, details := range p.Content.Vps {
+		if strings.ToLower(details.Group) != "giftcard" && strings.ToLower(details.Group) != "microsoft" {
+			res.Type = "error"
+			res.Content.Response.Error = "Vps must have `Giftcard` or `Microsoft` selected."
+			return res
+		} else {
+			if AddVps(details.Ip, details.Port, details.Password, details.Host) {
+				state.Vps = append(state.Vps, details)
+				res.Content.Vps = p.Content.Vps
+				state.SaveState()
+			}
+		}
+	}
+
+	return res
+}
+
 func save_logs(p types.Packet) types.Packet {
 	res := types.Packet{}
 	res.Type = "save_logs_response"
@@ -199,4 +227,43 @@ func save_logs(p types.Packet) types.Packet {
 	state.SaveState()
 
 	return res
+}
+
+func AddVps(ip, port, password, user string) bool {
+	conn, err := ssh.Dial("tcp", ip+":"+port, &ssh.ClientConfig{
+		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+		User:            user,
+		Auth: []ssh.AuthMethod{
+			ssh.Password(password),
+		},
+	})
+	if err != nil {
+		log.Println("Error: " + err.Error())
+	} else {
+		session, _ := sftp.NewClient(conn)
+		defer session.Close()
+
+		if err != nil {
+			log.Println("Error: " + err.Error())
+		} else {
+
+			sesh, _ := conn.NewSession()
+			defer sesh.Close()
+
+			var stdoutBuf bytes.Buffer
+			sesh.Stdout = &stdoutBuf
+			err := sesh.Run("git clone https://github.com/wwhtrbbtt/AlienSniper\ncd AlienSniper\nchmod +x ./Alien\n./Alien configure")
+			if err == nil {
+				file, _ := os.Open("config.json")
+
+				dstFile, _ := session.Create("/root/AlienSniper/config.json")
+
+				if _, err := dstFile.ReadFrom(file); err == nil {
+					return true
+				}
+			}
+		}
+	}
+
+	return false
 }
