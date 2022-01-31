@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/gorilla/websocket"
 )
@@ -140,6 +141,14 @@ func ConnectionHandler(c *websocket.Conn) {
 
 	log.Println("New client connected. Client type:", clientType, " - IP:", c.RemoteAddr().String())
 	if clientType == "node" {
+
+		for i, ips := range state.Vps {
+			if ips.Ip == strings.Split(c.RemoteAddr().String(), ":")[0] {
+				ips.Online = "Online"
+				state.Vps[i] = ips
+			}
+		}
+
 		connectedNodes = append(connectedNodes, c)
 		log.Println("Connected nodes:", len(connectedNodes))
 	} else if clientType == "web" {
@@ -152,6 +161,13 @@ func ConnectionHandler(c *websocket.Conn) {
 	for {
 		_, message, err := c.ReadMessage()
 		if err != nil {
+			for i, ips := range state.Vps {
+				if ips.Ip == strings.Split(c.RemoteAddr().String(), ":")[0] {
+					ips.Online = "Offline"
+					state.Vps[i] = ips
+				}
+			}
+
 			log.Println("read:", err)
 			RemoveConnection(c)
 			c.Close()

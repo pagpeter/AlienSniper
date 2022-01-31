@@ -179,6 +179,12 @@ func add_session(p types.Packet) types.Packet {
 	res.Type = "add_session_response"
 	res.Content.Response = &types.Response{}
 
+	if len(p.Content.Vps) == 0 {
+		res.Type = "error"
+		res.Content.Response.Error = "No details provided."
+		return res
+	}
+
 	for _, details := range p.Content.Vps {
 		if strings.ToLower(details.Group) != "giftcard" && strings.ToLower(details.Group) != "microsoft" {
 			res.Type = "error"
@@ -187,11 +193,16 @@ func add_session(p types.Packet) types.Packet {
 		} else {
 			if AddVps(details.Ip, details.Port, details.Password, details.Host) {
 				state.Vps = append(state.Vps, details)
-				res.Content.Vps = p.Content.Vps
-				state.SaveState()
+			} else {
+				res.Type = "error"
+				res.Content.Response.Error = "Failed to connect to the VPS"
+				return res
 			}
 		}
 	}
+
+	res.Content.Vps = p.Content.Vps
+	state.SaveState()
 
 	return res
 }
@@ -240,7 +251,7 @@ func AddVps(ip, port, password, user string) bool {
 	if err != nil {
 		log.Println("Error: " + err.Error())
 	} else {
-		session, _ := sftp.NewClient(conn)
+		session, err := sftp.NewClient(conn)
 		defer session.Close()
 
 		if err != nil {
@@ -259,7 +270,14 @@ func AddVps(ip, port, password, user string) bool {
 				dstFile, _ := session.Create("/root/AlienSniper/config.json")
 
 				if _, err := dstFile.ReadFrom(file); err == nil {
-					return true
+					sesh, _ := conn.NewSession()
+					var stdoutBuf bytes.Buffer
+					sesh.Stdout = &stdoutBuf
+
+					err := sesh.Run("cd AlienSniper\n./Alien node")
+					if err == nil {
+						return true
+					}
 				}
 			}
 		}

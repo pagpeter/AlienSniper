@@ -69,13 +69,6 @@ func PrintLogo() {
 	fmt.Println(text)
 }
 
-func PrintStats() {
-	fmt.Println("Running as host\n")
-	fmt.Println("Servers connected: " + "7")        //strconv.Itoa(len(servers)))
-	fmt.Println("Names attempted to snipe: " + "5") //strconv.Itoa(len(names)))
-	fmt.Println("Names successfully sniped: " + "3")
-}
-
 func Handle() {
 	app := &cli.App{
 		Commands: []*cli.Command{
@@ -92,13 +85,6 @@ func Handle() {
 					usage += "    node: Start as a node in the background\n"
 
 					fmt.Println(usage)
-					return nil
-				},
-			},
-			{
-				Name: "stats",
-				Action: func(c *cli.Context) error {
-					PrintStats()
 					return nil
 				},
 			},

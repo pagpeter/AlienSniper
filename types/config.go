@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
 )
 
@@ -48,6 +49,28 @@ func (c *Config) SaveToFile() {
 	ioutil.WriteFile("config.json", json, 0644)
 }
 
+type IP struct {
+	Query string
+}
+
+func getip2() string {
+	req, err := http.Get("http://ip-api.com/json/")
+	if err != nil {
+		return err.Error()
+	}
+	defer req.Body.Close()
+
+	body, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		return err.Error()
+	}
+
+	var ip IP
+	json.Unmarshal(body, &ip)
+
+	return ip.Query
+}
+
 func Configure() *Config {
 	// Start the configuring process, used to generate a config file
 
@@ -59,7 +82,7 @@ func Configure() *Config {
 	c.Token = utils.GenerateToken(20)
 	fmt.Println("Generated token: ", c.Token)
 
-	c.Host = "0.0.0.0"
+	c.Host = getip2()
 	fmt.Println("\nUsing host at: " + c.Host)
 
 	c.Port = 21615
