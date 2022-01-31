@@ -41,6 +41,12 @@ func Start() {
 	addr := fmt.Sprintf("%s:%d", state.Config.Host, state.Config.Port)
 	log.Println("Listening on", prefix+addr+"/ws")
 	StartAPI(addr)
+
+	if len(state.Vps) != 0 {
+		for _, details := range state.Vps {
+			start_vps(details.Ip, details.Port, details.Password, details.Host)
+		}
+	}
 }
 
 // Check if any account has to be authenticated

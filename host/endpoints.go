@@ -203,6 +203,7 @@ func add_session(p types.Packet) types.Packet {
 
 	res.Content.Vps = p.Content.Vps
 	state.SaveState()
+	state.LoadState()
 
 	return res
 }
@@ -240,6 +241,40 @@ func save_logs(p types.Packet) types.Packet {
 	return res
 }
 
+func start_vps(ip, port, password, user string) bool {
+	conn, err := ssh.Dial("tcp", ip+":"+port, &ssh.ClientConfig{
+		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+		User:            user,
+		Auth: []ssh.AuthMethod{
+			ssh.Password(password),
+		},
+	})
+
+	if err != nil {
+		log.Println("Error: " + err.Error())
+	} else {
+		session, err := sftp.NewClient(conn)
+		defer session.Close()
+
+		if err != nil {
+			log.Println("Error: " + err.Error())
+		} else {
+
+			sesh, _ := conn.NewSession()
+			defer sesh.Close()
+
+			var stdoutBuf bytes.Buffer
+			sesh.Stdout = &stdoutBuf
+			err := sesh.Run("cd AlienSniper\ntmux ./Alien node")
+			if err == nil {
+				return true
+			}
+		}
+	}
+
+	return false
+}
+
 func AddVps(ip, port, password, user string) bool {
 	conn, err := ssh.Dial("tcp", ip+":"+port, &ssh.ClientConfig{
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
@@ -271,10 +306,11 @@ func AddVps(ip, port, password, user string) bool {
 
 				if _, err := dstFile.ReadFrom(file); err == nil {
 					sesh, _ := conn.NewSession()
+					defer sesh.Close()
 					var stdoutBuf bytes.Buffer
 					sesh.Stdout = &stdoutBuf
 
-					err := sesh.Run("cd AlienSniper\n./Alien node")
+					err := sesh.Run("cd AlienSniper\ntmux ./Alien node")
 					if err == nil {
 						return true
 					}

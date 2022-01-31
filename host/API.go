@@ -149,6 +149,9 @@ func ConnectionHandler(c *websocket.Conn) {
 			}
 		}
 
+		state.SaveState()
+		state.LoadState()
+
 		connectedNodes = append(connectedNodes, c)
 		log.Println("Connected nodes:", len(connectedNodes))
 	} else if clientType == "web" {
@@ -168,6 +171,9 @@ func ConnectionHandler(c *websocket.Conn) {
 				}
 			}
 
+			state.SaveState()
+			state.LoadState()
+
 			log.Println("read:", err)
 			RemoveConnection(c)
 			c.Close()
@@ -177,8 +183,16 @@ func ConnectionHandler(c *websocket.Conn) {
 		var p types.Packet
 		err = p.Decode(message)
 		if err != nil {
-			// log.Println("decode:", err, c.RemoteAddr().String())
-			// log.Println("message:", string(message))
+			for i, ips := range state.Vps {
+				if ips.Ip == strings.Split(c.RemoteAddr().String(), ":")[0] {
+					ips.Online = "Offline"
+					state.Vps[i] = ips
+				}
+			}
+
+			state.SaveState()
+			state.LoadState()
+
 			errp := tmp.MakeError("Error decoding message")
 			c.WriteMessage(websocket.TextMessage, errp.Encode())
 			RemoveConnection(c)
