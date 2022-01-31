@@ -3,6 +3,7 @@ package host
 import (
 	types "Alien/types"
 	"bytes"
+	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -286,36 +287,36 @@ func AddVps(ip, port, password, user string) bool {
 	if err != nil {
 		log.Println("Error: " + err.Error())
 	} else {
-		session, err := sftp.NewClient(conn)
+		session, _ := sftp.NewClient(conn)
 		defer session.Close()
 
-		if err != nil {
-			log.Println("Error: " + err.Error())
-		} else {
+		sesh, _ := conn.NewSession()
+		defer sesh.Close()
 
-			sesh, _ := conn.NewSession()
-			defer sesh.Close()
+		start, _ := conn.NewSession()
+		defer sesh.Close()
 
-			var stdoutBuf bytes.Buffer
-			sesh.Stdout = &stdoutBuf
-			err := sesh.Run("git clone https://github.com/wwhtrbbtt/AlienSniper\ncd AlienSniper\nchmod +x ./Alien\n./Alien configure")
-			if err == nil {
-				file, _ := os.Open("config.json")
+		var stdoutBuf bytes.Buffer
+		sesh.Stdout = &stdoutBuf
+		err := sesh.Run("git clone https://github.com/wwhtrbbtt/AlienSniper\ncd AlienSniper\nchmod +x ./Alien\n./Alien configure")
+		if err == nil {
+			file, _ := os.Open("config.json")
 
-				dstFile, _ := session.Create("/root/AlienSniper/config.json")
+			dstFile, _ := session.Create("/root/AlienSniper/config.json")
 
-				if _, err := dstFile.ReadFrom(file); err == nil {
-					sesh, _ := conn.NewSession()
-					defer sesh.Close()
-					var stdoutBuf bytes.Buffer
-					sesh.Stdout = &stdoutBuf
+			if _, err := dstFile.ReadFrom(file); err == nil {
+				var stdoutBuf bytes.Buffer
+				sesh.Stdout = &stdoutBuf
 
-					err := sesh.Run("cd AlienSniper\ntmux ./Alien node")
-					if err == nil {
-						return true
-					}
+				err := start.Run("cd AlienSniper\ntmux ./Alien node")
+				if err == nil {
+					return true
+				} else {
+					fmt.Println(err)
 				}
 			}
+		} else {
+			fmt.Println(err)
 		}
 	}
 
