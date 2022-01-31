@@ -306,17 +306,17 @@ func AddVps(ip, port, password, user string) bool {
 
 			if _, err := dstFile.ReadFrom(file); err == nil {
 				var stdoutBuf bytes.Buffer
-				sesh.Stdout = &stdoutBuf
+				start.Stdout = &stdoutBuf
 
 				err := start.Run("cd AlienSniper\ntmux ./Alien node")
 				if err == nil {
 					return true
 				} else {
-					fmt.Println(err)
+					fmt.Println(err, "1")
 				}
 			}
 		} else {
-			fmt.Println(err)
+			fmt.Println(err, "2")
 		}
 	}
 
