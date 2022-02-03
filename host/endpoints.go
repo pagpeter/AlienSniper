@@ -204,7 +204,6 @@ func add_session(p types.Packet) types.Packet {
 
 	res.Content.Vps = p.Content.Vps
 	state.SaveState()
-	state.LoadState()
 
 	return res
 }

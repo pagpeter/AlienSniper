@@ -150,10 +150,21 @@ func ConnectionHandler(c *websocket.Conn) {
 		}
 
 		state.SaveState()
-		state.LoadState()
 
 		connectedNodes = append(connectedNodes, c)
 		log.Println("Connected nodes:", len(connectedNodes))
+		exists := false
+		for _, vps := range state.Vps {
+			if vps.Ip == strings.Split(c.RemoteAddr().String(), ":")[0] {
+				vps.Online = "Online"
+				state.Vps[i] = vps
+				exists = true
+			}
+		}
+		if !exists {
+			state.Vps = append(state.Vps, types.Session{Ip: strings.Split(c.RemoteAddr().String(), ":")[0], Online: "Online", Group: "Manually added"})
+		}
+		state.SaveState()
 	} else if clientType == "web" {
 		connectedDashboards = append(connectedDashboards, c)
 		log.Println("Connected dashboards:", len(connectedDashboards))
@@ -163,16 +174,16 @@ func ConnectionHandler(c *websocket.Conn) {
 
 	for {
 		_, message, err := c.ReadMessage()
+		// If there was an error while reading the message, mark the VPS as offline
 		if err != nil {
 			for i, ips := range state.Vps {
-				if ips.Ip == strings.Split(c.RemoteAddr().String(), ":")[0] {
+				if (ips.Ip == strings.Split(c.RemoteAddr().String(), ":")[0]) && (strings.Split(c.RemoteAddr().String(), ":")[0] != "127.0.0.1") {
 					ips.Online = "Offline"
 					state.Vps[i] = ips
 				}
 			}
 
 			state.SaveState()
-			state.LoadState()
 
 			log.Println("read:", err)
 			RemoveConnection(c)
@@ -182,16 +193,16 @@ func ConnectionHandler(c *websocket.Conn) {
 
 		var p types.Packet
 		err = p.Decode(message)
+		// If there was an error while reading the message, mark the VPS as offline
 		if err != nil {
 			for i, ips := range state.Vps {
-				if ips.Ip == strings.Split(c.RemoteAddr().String(), ":")[0] {
+				if (ips.Ip == strings.Split(c.RemoteAddr().String(), ":")[0]) && (strings.Split(c.RemoteAddr().String(), ":")[0] != "127.0.0.1") {
 					ips.Online = "Offline"
 					state.Vps[i] = ips
 				}
 			}
 
 			state.SaveState()
-			state.LoadState()
 
 			errp := tmp.MakeError("Error decoding message")
 			c.WriteMessage(websocket.TextMessage, errp.Encode())

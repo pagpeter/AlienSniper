@@ -33,7 +33,7 @@ type State struct {
 	Accounts []StoredAccount `json:"accounts,omitempty"`
 	Tasks    []QueuedTask    `json:"tasks,omitempty"`
 	Logs     []Log           `json:"logs,omitempty"`
-	Vps      []Sessions      `json:"sessions,omitempty"`
+	Vps      []Session       `json:"sessions,omitempty"`
 }
 
 func (s *State) ToJson() []byte {
