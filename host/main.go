@@ -16,7 +16,6 @@ var RequestMap map[string]int
 func Start() {
 	state.LoadState()
 	RequestMap = map[string]int{
-		"mojang":    state.Config.Requests.Mojang,
 		"giftcard":  state.Config.Requests.Giftcard,
 		"microsoft": state.Config.Requests.Microsoft,
 	}
@@ -106,49 +105,27 @@ func TaskThread() {
 				// if less than minute is left
 				if task.Timestamp-time.Now().Unix() < 60 {
 					log.Println("Task", task.Type, "is due for execution. Name:", task.Name)
-					// TODO
-					// get account that should be used
-					// assign each VPS a account
-					// sending to all VPSs
 
-					var outputlist = make(map[string][][]types.StoredAccount)
-					var giftcard int
-					var microsoft int
+					var data [][]types.StoredAccount
+					var incr int
+					var use int
 
 					for _, inp := range state.Accounts {
-						var group string
-						if inp.Group != "" {
-							group = inp.Group
+						if len(data) == 0 {
+							data = append(data, []types.StoredAccount{
+								inp,
+							})
 						} else {
-							if inp.Type != "" {
-								group = inp.Type
+							if incr == 4 {
+								incr = 0
+								use++
+								data = append(data, []types.StoredAccount{})
 							}
+
+							data[use] = append(data[use], inp)
 						}
 
-						if len(outputlist[group]) == 0 {
-							outputlist[group] = append(outputlist[group], []types.StoredAccount{inp})
-						} else {
-							if inp.Type == "giftcard" {
-								if len(outputlist[group][giftcard]) == 5 {
-									giftcard++
-									outputlist[group] = append(outputlist[group], []types.StoredAccount{inp})
-								} else {
-									outputlist[group][giftcard] = append(outputlist[group][giftcard], inp)
-								}
-							} else if inp.Type == "microsoft" {
-								if len(outputlist[group][microsoft]) == 1 {
-									microsoft++
-									outputlist[group] = append(outputlist[group], []types.StoredAccount{inp})
-								} else {
-									outputlist[group][microsoft] = append(outputlist[group][microsoft], inp)
-								}
-							}
-						}
-					}
-
-					var outputs []types.Output
-					for i, outp := range outputlist {
-						outputs = append(outputs, types.Output{Group: i, Accounts: outp})
+						incr++
 					}
 
 					p := types.Packet{}
@@ -157,55 +134,19 @@ func TaskThread() {
 					log.Println("Sending to VPS(s)")
 
 					var cancel bool = false
-					for _, info := range outputs {
+					for _, info := range data {
 						if !cancel {
-							for i, data := range info.Accounts {
-								if task.Group != "" {
-									if task.Group == info.Group {
-										p.Content.Task = &types.Task{
-											Type:      task.Type,
-											Name:      task.Name,
-											Timestamp: task.Timestamp,
-											Group:     task.Group,
-											Accounts:  data,
-										}
-
-										if i != len(connectedNodes) {
-											connectedNodes[i].WriteMessage(websocket.TextMessage, p.Encode())
-										} else {
-											cancel = true
-										}
-									}
-								} else {
-									if info.Group == "giftcard" {
-										p.Content.Task = &types.Task{
-											Type:      task.Type,
-											Name:      task.Name,
-											Timestamp: task.Timestamp,
-											Group:     task.Group,
-											Accounts:  data,
-										}
-										if i != len(connectedNodes) {
-											connectedNodes[i].WriteMessage(websocket.TextMessage, p.Encode())
-										} else {
-											cancel = true
-										}
-									} else if info.Group == "microsoft" {
-										p.Content.Task = &types.Task{
-											Type:      task.Type,
-											Name:      task.Name,
-											Timestamp: task.Timestamp,
-											Group:     task.Group,
-											Accounts:  data,
-										}
-
-										if i != len(connectedNodes) {
-											connectedNodes[i].WriteMessage(websocket.TextMessage, p.Encode())
-										} else {
-											cancel = true
-										}
-									}
-								}
+							p.Content.Task = &types.Task{
+								Type:      task.Type,
+								Name:      task.Name,
+								Timestamp: task.Timestamp,
+								Group:     task.Group,
+								Accounts:  info,
+							}
+							if i != len(connectedNodes) {
+								connectedNodes[i].WriteMessage(websocket.TextMessage, p.Encode())
+							} else {
+								cancel = true
 							}
 						}
 					}

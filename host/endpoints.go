@@ -5,10 +5,8 @@ import (
 	"bytes"
 	"fmt"
 	"log"
-	"os"
 	"strings"
 
-	"github.com/pkg/sftp"
 	"golang.org/x/crypto/ssh"
 )
 
@@ -253,22 +251,14 @@ func start_vps(ip, port, password, user string) bool {
 	if err != nil {
 		log.Println("Error: " + err.Error())
 	} else {
-		session, err := sftp.NewClient(conn)
-		defer session.Close()
+		sesh, _ := conn.NewSession()
+		defer sesh.Close()
 
-		if err != nil {
-			log.Println("Error: " + err.Error())
-		} else {
-
-			sesh, _ := conn.NewSession()
-			defer sesh.Close()
-
-			var stdoutBuf bytes.Buffer
-			sesh.Stdout = &stdoutBuf
-			err := sesh.Run("cd AlienSniper\ntmux ./Alien node")
-			if err == nil {
-				return true
-			}
+		var stdoutBuf bytes.Buffer
+		sesh.Stdout = &stdoutBuf
+		err := sesh.Run(fmt.Sprintf("nohup ./Alien node -ip %v:%v", state.Config.Host, state.Config.Port))
+		if err == nil {
+			return true
 		}
 	}
 
@@ -286,36 +276,13 @@ func AddVps(ip, port, password, user string) bool {
 	if err != nil {
 		log.Println("Error: " + err.Error())
 	} else {
-		session, _ := sftp.NewClient(conn)
-		defer session.Close()
-
 		sesh, _ := conn.NewSession()
 		defer sesh.Close()
-
-		start, _ := conn.NewSession()
-		defer sesh.Close()
-
 		var stdoutBuf bytes.Buffer
 		sesh.Stdout = &stdoutBuf
-		err := sesh.Run("git clone https://github.com/wwhtrbbtt/AlienSniper\ncd AlienSniper\nchmod +x ./Alien\n./Alien configure")
+		err := sesh.Run(fmt.Sprintf("wget linkhere\nchmod +x ./Alien\nnohup ./Alien node -ip %v:%v", state.Config.Host, state.Config.Port))
 		if err == nil {
-			file, _ := os.Open("config.json")
-
-			dstFile, _ := session.Create("/root/AlienSniper/config.json")
-
-			if _, err := dstFile.ReadFrom(file); err == nil {
-				var stdoutBuf bytes.Buffer
-				start.Stdout = &stdoutBuf
-
-				err := start.Run("cd AlienSniper\ntmux ./Alien node")
-				if err == nil {
-					return true
-				} else {
-					fmt.Println(err, "1")
-				}
-			}
-		} else {
-			fmt.Println(err, "2")
+			return true
 		}
 	}
 

@@ -6,13 +6,12 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"net/http"
 	"os"
+	"runtime"
 )
 
 type Requests struct {
 	Giftcard  int `json:"giftcard"`
-	Mojang    int `json:"mojang"`
 	Microsoft int `json:"microsoft"`
 }
 
@@ -53,49 +52,33 @@ type IP struct {
 	Query string
 }
 
-func getip2() string {
-	req, err := http.Get("http://ip-api.com/json/")
-	if err != nil {
-		return err.Error()
-	}
-	defer req.Body.Close()
-
-	body, err := ioutil.ReadAll(req.Body)
-	if err != nil {
-		return err.Error()
-	}
-
-	var ip IP
-	json.Unmarshal(body, &ip)
-
-	return ip.Query
-}
-
 func Configure() *Config {
 	// Start the configuring process, used to generate a config file
 
-	// IP := utils.GetIP()
 	c := Config{}
+
+	if runtime.GOOS == "windows" {
+		c.Host = "127.0.0.1"
+	} else {
+		c.Host = "0.0.0.0"
+	}
 
 	fmt.Println("Welcome, we are now configuring Alien for you. ")
 
 	c.Token = utils.GenerateToken(20)
 	fmt.Println("Generated token: ", c.Token)
+	fmt.Println("Using host at: " + c.Host)
 
-	c.Host = getip2()
-	fmt.Println("\nUsing host at: " + c.Host)
+	fmt.Print("Port: ")
+	fmt.Scan(&c.Port)
 
-	c.Port = 21615
-	fmt.Println("\nUsing port 21615")
+	fmt.Printf("Using port: %v\n", c.Port)
 
 	c.Requests.Giftcard = 2
-	fmt.Println("\nUsing 2 giftcard requests")
-
-	c.Requests.Mojang = 2
-	fmt.Println("\nUsing 2 mojang requests")
+	fmt.Println("Using 2 giftcard requests")
 
 	c.Requests.Microsoft = 2
-	fmt.Println("\nUsing 2 microsoft requests")
+	fmt.Println("Using 2 microsoft requests")
 
 	return &c
 }
