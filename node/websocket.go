@@ -12,7 +12,7 @@ import (
 var err error
 
 // https://github.com/gorilla/websocket/blob/master/examples/echo/client.go
-func MakeConnection(addr string) *websocket.Conn {
+func MakeConnection(addr, key string) *websocket.Conn {
 	// connect to the host
 	u := url.URL{Scheme: "ws", Host: addr, Path: "/ws"}
 
@@ -27,7 +27,7 @@ func MakeConnection(addr string) *websocket.Conn {
 	authmsg := types.Packet{
 		Type: "auth",
 		Content: types.Content{
-			Auth: config.Token,
+			Auth: key,
 			Response: &types.Response{
 				Message: "node",
 			},

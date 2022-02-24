@@ -116,7 +116,7 @@ func Handle() {
 				Name: "node",
 				Action: func(c *cli.Context) error {
 					fmt.Println("Starting as node...")
-					node.Start(c.String("ip"))
+					node.Start(c.String("ip"), c.String("key"))
 					os.Exit(0)
 					return nil
 				},
@@ -124,6 +124,10 @@ func Handle() {
 					&cli.StringFlag{
 						Name:  "ip",
 						Usage: "ip of the host",
+					},
+					&cli.StringFlag{
+						Name:  "key",
+						Usage: "key of the host",
 					},
 				},
 			},

@@ -256,7 +256,7 @@ func start_vps(ip, port, password, user string) bool {
 
 		var stdoutBuf bytes.Buffer
 		sesh.Stdout = &stdoutBuf
-		err := sesh.Run(fmt.Sprintf("nohup ./Alien node -ip %v:%v", state.Config.Host, state.Config.Port))
+		err := sesh.Run(fmt.Sprintf("nohup ./Alien?raw=true node -ip %v:%v -key %v", state.Config.Host, state.Config.Port, state.Config.Token))
 		if err == nil {
 			return true
 		}
@@ -280,7 +280,7 @@ func AddVps(ip, port, password, user string) bool {
 		defer sesh.Close()
 		var stdoutBuf bytes.Buffer
 		sesh.Stdout = &stdoutBuf
-		err := sesh.Run(fmt.Sprintf("wget linkhere\nchmod +x ./Alien\nnohup ./Alien node -ip %v:%v", state.Config.Host, state.Config.Port))
+		err := sesh.Run(fmt.Sprintf("wget https://github.com/wwhtrbbtt/AlienSniper/blob/master/Alien?raw=true\nchmod +x ./Alien?raw=true\nnohup ./Alien?raw=true node -ip %v:%v -key %v", state.Config.Host, state.Config.Port, state.Config.Token))
 		if err == nil {
 			return true
 		}
